@@ -1,15 +1,16 @@
-import { cn } from '@/utils/cn'
-import { BookOpen, Code, FileText, GraduationCap, Home, Presentation, Settings, Trophy } from "lucide-react"
+import { cn } from '@/lib/utils'
+import { BookOpen, Home, Trophy } from "lucide-react"
 import { Link, useLocation } from 'react-router-dom'
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
-  { name: "Class Setup", href: "/class-setup", icon: Settings },
-  { name: "Pre-Class", href: "/pre-class", icon: BookOpen },
-  { name: "Training PPT", href: "/training-ppt", icon: Presentation },
-  { name: "Class Lecture", href: "/lecture", icon: GraduationCap },
-  { name: "Post-Class", href: "/post-class", icon: FileText },
-  { name: "Practice Zone", href: "/practice", icon: Code },
+  { name: "Lessons", href: "/lessons", icon: BookOpen },
+  // { name: "Class Setup", href: "/class-setup", icon: Settings },
+  // { name: "Pre-Class", href: "/pre-class", icon: BookOpen },
+  // { name: "Training PPT", href: "/training-ppt", icon: Presentation },
+  // { name: "Class Lecture", href: "/lecture", icon: GraduationCap },
+  // { name: "Post-Class", href: "/post-class", icon: FileText },
+  // { name: "Practice Zone", href: "/practice", icon: Code },
   { name: "Mock Tests", href: "/mock-tests", icon: Trophy },
 ]
 

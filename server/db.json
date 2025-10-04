@@ -1,0 +1,122 @@
+{
+	"subjects": [
+		{
+			"id": "ds-algo",
+			"name": "Data Structures & Algorithms",
+			"syllabus": [
+				"Arrays and Strings",
+				"Linked Lists",
+				"Stacks and Queues",
+				"Trees and Graphs",
+				"Sorting Algorithms",
+				"Searching Algorithms",
+				"Dynamic Programming",
+				"Greedy Algorithms"
+			]
+		},
+		{
+			"id": "web-dev",
+			"name": "Web Development",
+			"syllabus": [
+				"HTML5 Fundamentals",
+				"CSS3 and Responsive Design",
+				"JavaScript ES6+",
+				"React.js",
+				"Node.js and Express",
+				"RESTful APIs",
+				"Database Integration",
+				"Authentication & Security"
+			]
+		},
+		{
+			"id": "dbms",
+			"name": "Database Management Systems",
+			"syllabus": [
+				"Relational Database Concepts",
+				"SQL Fundamentals",
+				"Normalization",
+				"Transactions and Concurrency",
+				"Indexing and Optimization",
+				"NoSQL Databases",
+				"Database Design",
+				"Query Optimization"
+			]
+		},
+		{
+			"id": "os",
+			"name": "Operating Systems",
+			"syllabus": [
+				"Process Management",
+				"Memory Management",
+				"File Systems",
+				"CPU Scheduling",
+				"Deadlocks",
+				"Virtual Memory",
+				"I/O Systems",
+				"Security and Protection"
+			]
+		}
+	],
+	"quizzes": [
+		{
+			"id": "q1-1696431840000",
+			"question": "What is the primary concept discussed in this document?",
+			"options": [
+				"Basic fundamentals and core principles",
+				"Advanced optimization techniques",
+				"Historical background only",
+				"Future predictions"
+			],
+			"correctAnswer": 0,
+			"explanation": "The document primarily focuses on establishing fundamental concepts before moving to advanced topics."
+		},
+		{
+			"id": "q2-1696431840000",
+			"question": "Which methodology is recommended for practical implementation?",
+			"options": [
+				"Trial and error approach",
+				"Systematic step-by-step methodology",
+				"Random experimentation",
+				"Theoretical analysis only"
+			],
+			"correctAnswer": 1,
+			"explanation": "A systematic approach ensures better results and reduces errors."
+		},
+		{
+			"id": "q3-1696431840000",
+			"question": "What is the key benefit of following best practices?",
+			"options": [
+				"Faster completion time",
+				"Improved efficiency and reliability",
+				"Reduced documentation needs",
+				"Simplified testing requirements"
+			],
+			"correctAnswer": 1,
+			"explanation": "Best practices lead to more efficient and reliable implementations."
+		},
+		{
+			"id": "q4-1696431840000",
+			"question": "How should common pitfalls be addressed?",
+			"options": [
+				"Ignore them initially",
+				"Learn from mistakes after they occur",
+				"Proactive prevention through awareness",
+				"Wait for automated detection"
+			],
+			"correctAnswer": 2,
+			"explanation": "Being aware of common pitfalls helps prevent them before they occur."
+		},
+		{
+			"id": "q5-1696431840000",
+			"question": "What is the recommended approach for advanced topics?",
+			"options": [
+				"Skip fundamentals and jump directly",
+				"Build upon foundational knowledge",
+				"Study independently without context",
+				"Focus only on theoretical aspects"
+			],
+			"correctAnswer": 1,
+			"explanation": "Advanced topics are best understood when built upon a solid foundation."
+		}
+	]
+}
