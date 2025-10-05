@@ -1,73 +1,78 @@
-# React + TypeScript + Vite
+# Student Learning Assistant
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive learning platform designed to help students with quizzes, mock tests, and educational content.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend Framework**: React 19 with TypeScript
+- **Routing**: React Router DOM v7
+- **State Management**: Zustand
+- **API Handling**: Axios, TanStack React Query
+- **UI Components**: Radix UI, Tailwind CSS
+- **Development Environment**: Vite
+- **Backend Mock**: JSON Server
+- **Code Quality**: ESLint, TypeScript
+- **File Handling**: React Dropzone
+- **Code Highlighting**: Prism.js
+- **Notifications**: React Hot Toast
 
-## React Compiler
+## Setup Instructions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. **Clone the repository**
 
-## Expanding the ESLint configuration
+2. **Install dependencies**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+   ```
+   npm install
+   ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+3. **Start the development server**
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+   ```
+   npm run dev
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+4. **Start the mock backend server**
+
+   ```
+   npm run server
+   ```
+
+   This will start the JSON server on port 8000, serving data from `./server/db.json`.
+
+5. **Build for production**
+
+   ```
+   npm run build
+   ```
+
+6. **Preview the production build**
+   ```
+   npm run preview
+   ```
+
+## Assumptions Made
+
+- The application is primarily focused on educational content delivery and assessment.
+- Users are primarily students who need access to learning materials and assessments.
+- The application uses a mock backend (JSON Server) for development and testing purposes.
+- The application supports various question types including quizzes, theory questions, and coding exercises.
+- File upload functionality is available for submitting assignments or related materials.
+
+## Future Improvements
+
+- **UX Improvements**: Enhance UI/UX for a better user experience.
+- **Authentication System**: Implement user authentication and authorization.
+- **Real Backend Integration**: Replace JSON Server with a proper backend service.
+- **Progress Tracking**: Add functionality to track student progress over time.
+- **Analytics Dashboard**: Implement analytics to help students understand their performance.
+- **Offline Support**: Add offline capabilities for accessing content without internet.
+- **Collaborative Features**: Add features for group study and peer reviews.
+- **Personalized Learning Paths**: Implement AI-driven personalized learning recommendations.
+- **Mobile App**: Develop native mobile applications for better mobile experience.
+- **Accessibility Improvements**: Enhance accessibility features for users with disabilities.
+- **Internationalization**: Add support for multiple languages.
+
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
