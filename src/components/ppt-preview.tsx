@@ -17,6 +17,8 @@ export function PPTPreview({ document }: PPTPreviewProps) {
     { id: 5, title: "Summary", content: "Key takeaways and next steps" },
   ]
 
+  console.log(document);
+
   return (
     <Card>
       <CardHeader>
