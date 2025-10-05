@@ -5,12 +5,6 @@ import { Link, useLocation } from 'react-router-dom'
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
   { name: "Lessons", href: "/lessons", icon: BookOpen },
-  // { name: "Class Setup", href: "/class-setup", icon: Settings },
-  // { name: "Pre-Class", href: "/pre-class", icon: BookOpen },
-  // { name: "Training PPT", href: "/training-ppt", icon: Presentation },
-  // { name: "Class Lecture", href: "/lecture", icon: GraduationCap },
-  // { name: "Post-Class", href: "/post-class", icon: FileText },
-  // { name: "Practice Zone", href: "/practice", icon: Code },
   { name: "Mock Tests", href: "/mock-tests", icon: Trophy },
 ]
 
@@ -20,7 +14,7 @@ export function Sidebar() {
   return (
     <div className="flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border">
       <div className="flex h-16 items-center border-b border-sidebar-border px-6">
-        <h1 className="text-xl font-bold text-sidebar-primary-foreground">Learning Assistant</h1>
+        <h1 className="text-xl font-bold">Learning Assistant</h1>
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">

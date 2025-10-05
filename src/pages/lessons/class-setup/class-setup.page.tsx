@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import LessonsService from '@/services/lessons/lessons.service'
 import { BookOpen, CheckCircle2 } from "lucide-react"
 import { useState } from "react"
+import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useLessonsStore } from '../lessons.store'
 
@@ -92,7 +93,13 @@ export function ClassSetupPage() {
       </div>
 
       <div className="flex justify-end mt-4">
-        <Button onClick={() => navigate('/lessons/pre-class')}>Next</Button>
+        <Button onClick={() => {
+          if (!selectedSubject) {
+            toast.error('Please select a subject')
+            return
+          }
+          navigate('/lessons/pre-class')
+        }}>Next</Button>
       </div>
     </div>
   )

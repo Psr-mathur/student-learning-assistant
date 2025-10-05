@@ -9,6 +9,7 @@ import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from '@/types/lessons.types'
 import { FileText, Mic } from "lucide-react"
 import { useState } from "react"
+import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useLessonsStore } from '../lessons.store'
 
@@ -117,7 +118,13 @@ export default function LecturePage() {
       </div>
       <div className="flex justify-between mt-4">
         <Button onClick={() => navigate('/lessons/training')}>Prev</Button>
-        <Button onClick={() => navigate('/lessons/post-class')}>Next</Button>
+        <Button onClick={() => {
+          if (!uploadedDoc) {
+            toast.error('Please upload a lecture material')
+            return
+          }
+          navigate('/lessons/post-class')
+        }}>Next</Button>
       </div>
     </div>
   )

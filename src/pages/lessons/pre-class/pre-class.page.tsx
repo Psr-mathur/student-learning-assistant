@@ -9,6 +9,7 @@ import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from "@/types/lessons.types"
 import { BookOpen, FileText, HelpCircle } from "lucide-react"
 import { useState } from "react"
+import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useLessonsStore } from '../lessons.store'
 
@@ -182,7 +183,13 @@ export function PreClassPage() {
 
       <div className="flex justify-between mt-4">
         <Button onClick={() => navigate('/lessons/class-setup')}>Prev</Button>
-        <Button onClick={() => navigate('/lessons/training')}>Next</Button>
+        <Button onClick={() => {
+          if (!uploadedDoc) {
+            toast.error('Please upload a pre-class document')
+            return
+          }
+          navigate('/lessons/training')
+        }}>Next</Button>
       </div>
     </div>
   )

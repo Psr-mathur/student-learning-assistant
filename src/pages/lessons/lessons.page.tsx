@@ -6,7 +6,7 @@ export const LessonsPage = () => {
   return (
     <div>
       <Button onClick={() => navigate('/lessons/class-setup')}>
-        Start
+        Start a Lesson
       </Button>
     </div>
   )
