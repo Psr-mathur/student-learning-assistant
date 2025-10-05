@@ -8,6 +8,7 @@ import PostClassPage from './pages/lessons/post-class/post-class.page';
 import PracticePage from './pages/lessons/practice/practice.page';
 import { PreClassPage } from './pages/lessons/pre-class/pre-class.page';
 import TrainingPage from './pages/lessons/training/training.page';
+import { MockTestPage } from './pages/mock-test/mock-test.page';
 import { RootLayout } from './pages/root-layout';
 
 export const router = createBrowserRouter([
@@ -54,7 +55,11 @@ export const router = createBrowserRouter([
             element: <PracticePage />
           },
         ]
-      }
+      },
+      {
+        path: "mock-tests",
+        element: <MockTestPage />
+      },
     ]
   }
 ])

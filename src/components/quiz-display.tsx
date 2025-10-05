@@ -1,11 +1,10 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import type { TQuiz } from '@/types/lessons.types'
 import { CheckCircle2, HelpCircle, XCircle } from "lucide-react"
 import { useState } from "react"
+import { QuizQuestion } from './quiz-question'
 
 interface QuizDisplayProps {
   quiz: TQuiz
@@ -126,33 +125,13 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div>
-          <h3 className="text-lg font-medium mb-4">{question.question}</h3>
-
-          <RadioGroup
-            value={selectedAnswers[currentQuestion]?.toString() ?? undefined}
-            onValueChange={(value) =>
-              setSelectedAnswers((prev) => ({ ...prev, [currentQuestion]: Number.parseInt(value) }))
-            }
-          >
-            <div className="space-y-3">
-              {question.options.map((option, index) => (
-                <div
-                  key={index}
-                  className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-accent/5 transition-colors"
-                >
-                  <RadioGroupItem
-                    value={index.toString() ?? undefined}
-                    id={`option-${index}`}
-                  />
-                  <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                    {option}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </RadioGroup>
-        </div>
+        <QuizQuestion
+          question={question}
+          value={selectedAnswers[currentQuestion]?.toString() ?? undefined}
+          onValueChange={(value) =>
+            setSelectedAnswers((prev) => ({ ...prev, [currentQuestion]: Number.parseInt(value) }))
+          }
+        />
 
         <div className="flex justify-between gap-3">
           <Button variant="outline" onClick={handlePrevious} disabled={currentQuestion === 0}>

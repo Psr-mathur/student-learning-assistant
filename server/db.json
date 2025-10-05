@@ -118,5 +118,227 @@
 			"correctAnswer": 1,
 			"explanation": "Advanced topics are best understood when built upon a solid foundation."
 		}
+	],
+	"mock-tests": [
+		{
+			"id": "mt1-1696431840000",
+			"subject": "ds-algo",
+			"title": "Data Structures & Algorithms Mock Test",
+			"questions": [
+				{
+					"id": "pq1-1696431840000",
+					"type": "mcq",
+					"question": "What is the key difference between synchronous and asynchronous programming?",
+					"options": [
+						"Synchronous is non-blocking, asynchronous is blocking",
+						"Synchronous executes sequentially, asynchronous allows concurrency",
+						"Both are the same",
+						"Asynchronous blocks execution until completion"
+					],
+					"correctAnswer": 1,
+					"difficulty": "medium"
+				},
+				{
+					"id": "pq2-1696431840000",
+					"type": "mcq",
+					"question": "How do data structures impact algorithm efficiency?",
+					"options": [
+						"They increase memory usage",
+						"They reduce readability",
+						"They determine time complexity and performance",
+						"They simplify syntax"
+					],
+					"correctAnswer": 2,
+					"difficulty": "medium"
+				},
+				{
+					"id": "pq3-1696431840000",
+					"type": "mcq",
+					"question": "Which principle is part of SOLID in software engineering?",
+					"options": [
+						"Single Responsibility",
+						"Simple Integration",
+						"Secure Optimization",
+						"Static Inheritance"
+					],
+					"correctAnswer": 0,
+					"difficulty": "hard"
+				},
+				{
+					"id": "pq1-1696431840000",
+					"type": "coding",
+					"question": "Write a function to reverse a string without using built-in reverse methods.",
+					"testCases": [
+						{ "input": "\"hello\"", "expectedOutput": "\"olleh\"" },
+						{ "input": "\"world\"", "expectedOutput": "\"dlrow\"" },
+						{ "input": "\"a\"", "expectedOutput": "\"a\"" }
+					],
+					"difficulty": "easy"
+				},
+				{
+					"id": "pq2-1696431840000",
+					"type": "coding",
+					"question": "Implement a function to find the maximum element in an array.",
+					"testCases": [
+						{ "input": "[1, 5, 3, 9, 2]", "expectedOutput": "9" },
+						{ "input": "[-1, -5, -3]", "expectedOutput": "-1" },
+						{ "input": "[42]", "expectedOutput": "42" }
+					],
+					"difficulty": "easy"
+				},
+				{
+					"id": "pq3-1696431840000",
+					"type": "coding",
+					"question": "Write a function to check if a string is a palindrome.",
+					"testCases": [
+						{ "input": "\"racecar\"", "expectedOutput": "true" },
+						{ "input": "\"hello\"", "expectedOutput": "false" },
+						{ "input": "\"a\"", "expectedOutput": "true" }
+					],
+					"difficulty": "medium"
+				}
+			]
+		},
+		{
+			"id": "mt2-1696431840001",
+			"subject": "operating-systems",
+			"title": "Operating Systems Mock Test",
+			"questions": [
+				{
+					"id": "pq1-1696431840001",
+					"type": "mcq",
+					"question": "What does a process scheduler do?",
+					"options": [
+						"Allocates memory to processes",
+						"Manages file systems",
+						"Selects the next process to run",
+						"Handles user input"
+					],
+					"correctAnswer": 2,
+					"difficulty": "medium"
+				},
+				{
+					"id": "pq2-1696431840001",
+					"type": "mcq",
+					"question": "Which strategy helps prevent deadlock?",
+					"options": [
+						"Circular wait",
+						"Resource ordering",
+						"Random execution",
+						"Priority scheduling"
+					],
+					"correctAnswer": 1,
+					"difficulty": "hard"
+				},
+				{
+					"id": "pq3-1696431840001",
+					"type": "coding",
+					"question": "Simulate a round-robin CPU scheduling algorithm.",
+					"testCases": [
+						{
+							"input": "[{id:1,burst:4},{id:2,burst:3}]",
+							"expectedOutput": "[1,2,1,2,1]"
+						},
+						{
+							"input": "[{id:1,burst:2},{id:2,burst:2},{id:3,burst:2}]",
+							"expectedOutput": "[1,2,3,1,2,3]"
+						}
+					],
+					"difficulty": "hard"
+				}
+			]
+		},
+		{
+			"id": "mt3-1696431840002",
+			"subject": "web-development",
+			"title": "Web Development Mock Test",
+			"questions": [
+				{
+					"id": "pq1-1696431840002",
+					"type": "mcq",
+					"question": "What is a key benefit of SSR over CSR?",
+					"options": [
+						"Better SEO and faster initial load",
+						"More animations",
+						"Client-side routing",
+						"Less server load"
+					],
+					"correctAnswer": 0,
+					"difficulty": "medium"
+				},
+				{
+					"id": "pq2-1696431840002",
+					"type": "coding",
+					"question": "Create a responsive navigation bar using HTML and CSS.",
+					"testCases": [
+						{
+							"input": "screen width: 1024px",
+							"expectedOutput": "horizontal layout"
+						},
+						{
+							"input": "screen width: 480px",
+							"expectedOutput": "hamburger menu"
+						}
+					],
+					"difficulty": "easy"
+				},
+				{
+					"id": "pq3-1696431840002",
+					"type": "coding",
+					"question": "Write a function to debounce an input event in JavaScript.",
+					"testCases": [
+						{
+							"input": "calls: [100ms, 200ms, 300ms], delay: 250ms",
+							"expectedOutput": "1 call triggered"
+						},
+						{
+							"input": "calls: [100ms, 400ms], delay: 250ms",
+							"expectedOutput": "2 calls triggered"
+						}
+					],
+					"difficulty": "medium"
+				}
+			]
+		},
+		{
+			"id": "mt4-1696431840003",
+			"subject": "database-systems",
+			"title": "Database Systems Mock Test",
+			"questions": [
+				{
+					"id": "pq1-1696431840003",
+					"type": "mcq",
+					"question": "What is the purpose of normalization?",
+					"options": [
+						"Increase redundancy",
+						"Improve query speed",
+						"Reduce data duplication and improve integrity",
+						"Simplify joins"
+					],
+					"correctAnswer": 2,
+					"difficulty": "medium"
+				},
+				{
+					"id": "pq2-1696431840003",
+					"type": "mcq",
+					"question": "Which property ensures a transaction completes fully or not at all?",
+					"options": ["Consistency", "Atomicity", "Durability", "Isolation"],
+					"correctAnswer": 1,
+					"difficulty": "easy"
+				},
+				{
+					"id": "pq3-1696431840003",
+					"type": "coding",
+					"question": "Write an SQL query to find the second highest salary from an employee table.",
+					"testCases": [
+						{
+							"input": "table: employees(salary)",
+							"expectedOutput": "SELECT MAX(salary) FROM employees WHERE salary < (SELECT MAX(salary) FROM employees);"
+						}
+					],
+					"difficulty": "medium"
+				}
+			]
+		}
 	]
 }

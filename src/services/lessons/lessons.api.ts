@@ -1,6 +1,10 @@
 import type { TPractice, TPracticeQuestion, TQuiz, TQuizQuestion, TSubject, TSummary } from '@/types/lessons.types';
 import { axiosInstance } from '@/utils/axios';
 import { delay } from '@/utils/delay';
+import ShortUniqueId from 'short-unique-id';
+
+
+const { randomUUID } = new ShortUniqueId({ length: 10 });
 
 export default class {
   static async getSubjects() {
@@ -22,7 +26,7 @@ export default class {
     await delay(1500)
 
     return {
-      id: `summary-${Date.now()}`,
+      id: `summary-${randomUUID()}`,
       documentId,
       content: `This is a comprehensive summary of the uploaded document. The document covers key concepts including fundamental principles, practical applications, and advanced topics. Main points include: 1) Introduction to core concepts and their significance in the field. 2) Detailed explanation of methodologies and best practices. 3) Real-world examples demonstrating practical implementation. 4) Advanced techniques for optimization and efficiency. 5) Common pitfalls and how to avoid them.`,
       generatedAt: new Date(),
@@ -34,7 +38,7 @@ export default class {
 
     const questions: TQuizQuestion[] = [
       {
-        id: `q1-${Date.now()}`,
+        id: `q1-${randomUUID()}`,
         question: "What is the primary concept discussed in this document?",
         options: [
           "Basic fundamentals and core principles",
@@ -47,7 +51,7 @@ export default class {
           "The document primarily focuses on establishing fundamental concepts before moving to advanced topics.",
       },
       {
-        id: `q2-${Date.now()}`,
+        id: `q2-${randomUUID()}`,
         question: "Which methodology is recommended for practical implementation?",
         options: [
           "Trial and error approach",
@@ -59,7 +63,7 @@ export default class {
         explanation: "A systematic approach ensures better results and reduces errors.",
       },
       {
-        id: `q3-${Date.now()}`,
+        id: `q3-${randomUUID()}`,
         question: "What is the key benefit of following best practices?",
         options: [
           "Faster completion time",
@@ -71,7 +75,7 @@ export default class {
         explanation: "Best practices lead to more efficient and reliable implementations.",
       },
       {
-        id: `q4-${Date.now()}`,
+        id: `q4-${randomUUID()}`,
         question: "How should common pitfalls be addressed?",
         options: [
           "Ignore them initially",
@@ -83,7 +87,7 @@ export default class {
         explanation: "Being aware of common pitfalls helps prevent them before they occur.",
       },
       {
-        id: `q5-${Date.now()}`,
+        id: `q5-${randomUUID()}`,
         question: "What is the recommended approach for advanced topics?",
         options: [
           "Skip fundamentals and jump directly",
@@ -97,7 +101,7 @@ export default class {
     ]
 
     return {
-      id: `quiz-${Date.now()}`,
+      id: `quiz-${randomUUID()}`,
       documentId,
       questions,
       generatedAt: new Date(),
@@ -111,7 +115,7 @@ export default class {
 
     const questions: TPracticeQuestion[] = [
       {
-        id: `pq1-${Date.now()}`,
+        id: `pq1-${randomUUID()}`,
         type: "theory",
         question: "Explain the key differences between synchronous and asynchronous programming paradigms.",
         answer:
@@ -119,7 +123,7 @@ export default class {
         difficulty: "medium",
       },
       {
-        id: `pq2-${Date.now()}`,
+        id: `pq2-${randomUUID()}`,
         type: "theory",
         question: "Describe the importance of data structures in algorithm efficiency.",
         answer:
@@ -127,7 +131,7 @@ export default class {
         difficulty: "medium",
       },
       {
-        id: `pq3-${Date.now()}`,
+        id: `pq3-${randomUUID()}`,
         type: "theory",
         question: "What are the SOLID principles in software engineering?",
         answer:
@@ -135,7 +139,7 @@ export default class {
         difficulty: "hard",
       },
       {
-        id: `pq1-${Date.now()}`,
+        id: `pq1-${randomUUID()}`,
         type: "coding",
         question: "Write a function to reverse a string without using built-in reverse methods.",
         testCases: [
@@ -146,7 +150,7 @@ export default class {
         difficulty: "easy",
       },
       {
-        id: `pq2-${Date.now()}`,
+        id: `pq2-${randomUUID()}`,
         type: "coding",
         question: "Implement a function to find the maximum element in an array.",
         testCases: [
@@ -157,7 +161,7 @@ export default class {
         difficulty: "easy",
       },
       {
-        id: `pq3-${Date.now()}`,
+        id: `pq3-${randomUUID()}`,
         type: "coding",
         question: "Write a function to check if a string is a palindrome.",
         testCases: [
@@ -170,7 +174,7 @@ export default class {
     ]
 
     return {
-      id: `pq-${Date.now()}`,
+      id: `pq-${randomUUID()}`,
       documentId,
       questions,
       generatedAt: new Date(),

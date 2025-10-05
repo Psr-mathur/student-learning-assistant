@@ -3,6 +3,7 @@ import { TheoryQuestionCard } from '@/components/theory-question-card'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BookOpen, Code, Trophy } from "lucide-react"
+import { useState } from 'react'
 import { useLessonsStore } from '../lessons.store'
 
 export default function PracticePage() {
@@ -11,6 +12,8 @@ export default function PracticePage() {
   const theoryQuestions = practices.map((q) => q.questions).flat().filter(q => q.type === "theory");
 
   const codingQuestions = practices.map((q) => q.questions).flat().filter(q => q.type === "coding");
+
+  const [solutions, setSolutions] = useState<Record<string, string>>({});
 
   return (
     <div className="container mx-auto p-8 max-w-7xl">
@@ -70,7 +73,10 @@ export default function PracticePage() {
           ))}
         </TabsContent>
         <TabsContent value="coding" className="space-y-4">
-          <CodingQuestionsCard questions={codingQuestions} />
+          <CodingQuestionsCard
+            solutions={solutions}
+            onSolutionChange={(questionId, code) => setSolutions({ ...solutions, [questionId]: code })}
+            questions={codingQuestions} />
         </TabsContent>
       </Tabs>
     </div>

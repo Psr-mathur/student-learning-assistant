@@ -1,5 +1,5 @@
 import type { TPracticeQuestion } from '@/types/lessons.types';
-import { Play, RotateCcw, Trophy } from 'lucide-react';
+import { Play, RotateCcw } from 'lucide-react';
 import Prism from "prismjs";
 import "prismjs/components/prism-javascript";
 import { useState } from 'react';
@@ -9,10 +9,9 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 
-export const CodingQuestionsCard = ({ questions }: { questions: Extract<TPracticeQuestion, { type: "coding" }>[] }) => {
+export const CodingQuestionsCard = ({ questions, solutions, onSolutionChange }: { questions: Extract<TPracticeQuestion, { type: "coding" }>[]; solutions: Record<string, string>; onSolutionChange: (questionId: string, code: string) => void }) => {
 
   const [selectedQuestion, setSelectedQuestion] = useState<Extract<TPracticeQuestion, { type: "coding" }> | undefined>(questions.at(0));
-  const [solvedProblems, setSolvedProblems] = useState<Record<string, string>>();
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -32,7 +31,6 @@ export const CodingQuestionsCard = ({ questions }: { questions: Extract<TPractic
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <p className="font-medium text-sm">{question.question}</p>
-                    {solvedProblems?.[question.id] && <Trophy className="h-4 w-4 text-accent flex-shrink-0" />}
                   </div>
                   <Badge
                     variant={
@@ -110,8 +108,8 @@ export const CodingQuestionsCard = ({ questions }: { questions: Extract<TPractic
 
           <TabsContent value="editor" className="space-y-4">
             <Editor
-              value={solvedProblems?.[selectedQuestion?.id || ""] || ""}
-              onValueChange={code => setSolvedProblems({ ...solvedProblems, [selectedQuestion?.id || ""]: code })}
+              value={solutions?.[selectedQuestion?.id || ""] || ""}
+              onValueChange={code => onSolutionChange(selectedQuestion?.id || "", code)}
               highlight={code => Prism.highlight(code, Prism.languages.javascript, "javascript")}
               padding={10}
               style={{

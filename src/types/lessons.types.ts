@@ -53,6 +53,13 @@ export type TPracticeQuestion = {
   question: string
   testCases: TTestCase[]
   difficulty: "easy" | "medium" | "hard"
+} | {
+  id: string
+  type: "mcq"
+  question: string
+  options: string[]
+  correctAnswer: number
+  difficulty: "easy" | "medium" | "hard"
 }
 
 export type TTestCase = {
