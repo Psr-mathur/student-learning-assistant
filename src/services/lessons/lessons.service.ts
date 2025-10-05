@@ -25,4 +25,8 @@ export default class LessonsService {
     mutationFn: lessonsApi.generateQuiz,
   });
 
+  static useGeneratePractice = createMutationHook({
+    mutationFn: lessonsApi.generatePractice,
+  });
+
 }

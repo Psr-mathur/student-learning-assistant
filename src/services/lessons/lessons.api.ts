@@ -1,4 +1,4 @@
-import type { TQuiz, TQuizQuestion, TSubject, TSummary } from '@/types/lessons.types';
+import type { TPractice, TPracticeQuestion, TQuiz, TQuizQuestion, TSubject, TSummary } from '@/types/lessons.types';
 import { axiosInstance } from '@/utils/axios';
 import { delay } from '@/utils/delay';
 
@@ -98,6 +98,79 @@ export default class {
 
     return {
       id: `quiz-${Date.now()}`,
+      documentId,
+      questions,
+      generatedAt: new Date(),
+    }
+  }
+
+  static async generatePractice(
+    { documentId }: { documentId: string }
+  ): Promise<TPractice> {
+    await delay(1800)
+
+    const questions: TPracticeQuestion[] = [
+      {
+        id: `pq1-${Date.now()}`,
+        type: "theory",
+        question: "Explain the key differences between synchronous and asynchronous programming paradigms.",
+        answer:
+          "Synchronous programming executes tasks sequentially, blocking execution until each task completes. Asynchronous programming allows tasks to run concurrently, enabling non-blocking operations and better resource utilization.",
+        difficulty: "medium",
+      },
+      {
+        id: `pq2-${Date.now()}`,
+        type: "theory",
+        question: "Describe the importance of data structures in algorithm efficiency.",
+        answer:
+          "Data structures directly impact algorithm performance by determining how data is organized, accessed, and modified. Choosing the right data structure can reduce time complexity from O(n²) to O(log n) or even O(1).",
+        difficulty: "medium",
+      },
+      {
+        id: `pq3-${Date.now()}`,
+        type: "theory",
+        question: "What are the SOLID principles in software engineering?",
+        answer:
+          "SOLID stands for: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion. These principles guide object-oriented design for maintainable and scalable code.",
+        difficulty: "hard",
+      },
+      {
+        id: `pq1-${Date.now()}`,
+        type: "coding",
+        question: "Write a function to reverse a string without using built-in reverse methods.",
+        testCases: [
+          { input: '"hello"', expectedOutput: '"olleh"' },
+          { input: '"world"', expectedOutput: '"dlrow"' },
+          { input: '"a"', expectedOutput: '"a"' },
+        ],
+        difficulty: "easy",
+      },
+      {
+        id: `pq2-${Date.now()}`,
+        type: "coding",
+        question: "Implement a function to find the maximum element in an array.",
+        testCases: [
+          { input: "[1, 5, 3, 9, 2]", expectedOutput: "9" },
+          { input: "[-1, -5, -3]", expectedOutput: "-1" },
+          { input: "[42]", expectedOutput: "42" },
+        ],
+        difficulty: "easy",
+      },
+      {
+        id: `pq3-${Date.now()}`,
+        type: "coding",
+        question: "Write a function to check if a string is a palindrome.",
+        testCases: [
+          { input: '"racecar"', expectedOutput: "true" },
+          { input: '"hello"', expectedOutput: "false" },
+          { input: '"a"', expectedOutput: "true" },
+        ],
+        difficulty: "medium",
+      },
+    ]
+
+    return {
+      id: `pq-${Date.now()}`,
       documentId,
       questions,
       generatedAt: new Date(),

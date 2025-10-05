@@ -33,3 +33,29 @@ export type TQuizQuestion = {
   correctAnswer: number
   explanation?: string
 }
+
+export type TPractice = {
+  id: string
+  documentId: string
+  questions: TPracticeQuestion[]
+  generatedAt: Date
+}
+
+export type TPracticeQuestion = {
+  id: string
+  type: "theory"
+  question: string
+  answer: string
+  difficulty: "easy" | "medium" | "hard"
+} | {
+  id: string
+  type: "coding"
+  question: string
+  testCases: TTestCase[]
+  difficulty: "easy" | "medium" | "hard"
+}
+
+export type TTestCase = {
+  input: string
+  expectedOutput: string
+}

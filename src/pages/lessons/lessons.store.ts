@@ -1,4 +1,4 @@
-import type { TDocument, TQuiz, TSubject, TSummary } from '@/types/lessons.types'
+import type { TDocument, TPractice, TQuiz, TSubject, TSummary } from '@/types/lessons.types'
 import { create } from "zustand"
 import { immer } from "zustand/middleware/immer"
 
@@ -16,6 +16,9 @@ type FormStore = {
 
   quizzes: TQuiz[]
   addQuiz: (quiz: TQuiz) => void
+
+  practices: TPractice[]
+  addPractice: (practiceQuestions: TPractice) => void
 }
 
 
@@ -42,6 +45,11 @@ export const useLessonsStore = create(
     quizzes: [],
     addQuiz: (quiz) => set((state) => {
       state.quizzes.push(quiz)
+    }),
+
+    practices: [],
+    addPractice: (practice) => set((state) => {
+      state.practices.push(practice)
     }),
   }))
 )

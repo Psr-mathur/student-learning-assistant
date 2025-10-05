@@ -9,10 +9,12 @@ import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from "@/types/lessons.types"
 import { BookOpen, FileText, HelpCircle } from "lucide-react"
 import { useState } from "react"
+import { useNavigate } from 'react-router-dom'
 import { useLessonsStore } from '../lessons.store'
 
 export function PreClassPage() {
   const { selectedSubject, addDocument, summaries, addSummary, quizzes, addQuiz } = useLessonsStore();
+  const navigate = useNavigate();
   const [uploadedDoc, setUploadedDoc] = useState<TDocument | null>(null);
   const generateSummaryMutation = LessonsService.useGenerateSummary();
   const generateQuizMutation = LessonsService.useGenerateQuiz();
@@ -176,6 +178,11 @@ export function PreClassPage() {
             </TabsContent>
           </Tabs>
         )}
+      </div>
+
+      <div className="flex justify-between mt-4">
+        <Button onClick={() => navigate('/lessons/class-setup')}>Prev</Button>
+        <Button onClick={() => navigate('/lessons/training')}>Next</Button>
       </div>
     </div>
   )
