@@ -2,16 +2,17 @@ import { CodingQuestionsCard } from '@/components/coding-questions-card'
 import { TheoryQuestionCard } from '@/components/theory-question-card'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import type { TCodingQuestion, TTheoryQuestion } from '@/types/lessons.types'
 import { BookOpen, Code, Trophy } from "lucide-react"
 import { useState } from 'react'
-import { useLessonsStore } from '../lessons.store'
+import { useCurrentSubjectStore } from '../lessons.store'
 
 export default function PracticePage() {
-  const { selectedSubject, practices } = useLessonsStore()
+  const { selectedSubject } = useCurrentSubjectStore()
 
-  const theoryQuestions = practices.map((q) => q.questions).flat().filter(q => q.type === "theory");
+  const theoryQuestions: TTheoryQuestion[] = []
 
-  const codingQuestions = practices.map((q) => q.questions).flat().filter(q => q.type === "coding");
+  const codingQuestions: TCodingQuestion[] = []
 
   const [solutions, setSolutions] = useState<Record<string, string>>({});
 

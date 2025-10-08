@@ -7,26 +7,33 @@ export default class LessonsService {
     queryFn: lessonsApi.getSubjects,
   });
 
-  static useGetQuizzes = createQueryHook({
-    queryKey: (documentId: string) => ['lessons', 'quizzes', documentId],
-    queryFn: lessonsApi.getQuizzes,
+  static useUpdateSubject = createMutationHook({
+    mutationKey: ['lessons', 'subject'],
+    mutationFn: lessonsApi.updateSubject,
   });
 
-  static useGetSummary = createQueryHook({
-    queryKey: (documentId: string) => ['lessons', 'summary', documentId],
-    queryFn: lessonsApi.getSummary,
+  static useCreateSubject = createMutationHook({
+    mutationKey: ['lessons', 'subject'],
+    mutationFn: lessonsApi.createSubject,
   });
 
   static useGenerateSummary = createMutationHook({
+    mutationKey: ['lessons', 'summary'],
     mutationFn: lessonsApi.generateSummary,
   });
 
-  static useGenerateQuiz = createMutationHook({
-    mutationFn: lessonsApi.generateQuiz,
+  static useGenerateQuizQuestions = createMutationHook({
+    mutationKey: ['lessons', 'quizQuestions'],
+    mutationFn: lessonsApi.generateQuizQuestions,
   });
 
-  static useGeneratePractice = createMutationHook({
-    mutationFn: lessonsApi.generatePractice,
+  static useGenerateTheoryQuestions = createMutationHook({
+    mutationKey: ['lessons', 'theoryQuestions'],
+    mutationFn: lessonsApi.generateTheoryQuestions,
   });
 
+  static useGenerateCodingQuestions = createMutationHook({
+    mutationKey: ['lessons', 'codingQuestions'],
+    mutationFn: lessonsApi.generateCodingQuestions,
+  });
 }

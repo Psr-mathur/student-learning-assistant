@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useLessonsStore } from "./lessons.store";
+import { useCurrentSubjectStore } from './lessons.store';
 
 export const LessonsLayout = () => {
-  const { selectedSubject } = useLessonsStore();
+  const { selectedSubject } = useCurrentSubjectStore();
   const location = useLocation();
 
   const isClassSetupRoute = location.pathname === "/lessons/class-setup";

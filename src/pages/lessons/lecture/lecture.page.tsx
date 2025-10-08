@@ -11,35 +11,57 @@ import { FileText, Mic } from "lucide-react"
 import { useState } from "react"
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
-import { useLessonsStore } from '../lessons.store'
+import { useCurrentSubjectStore } from '../lessons.store'
 
 export default function LecturePage() {
-  const { selectedSubject, addDocument, summaries, addSummary } = useLessonsStore();
+  const { selectedSubject } = useCurrentSubjectStore();
   const navigate = useNavigate();
   const [uploadedDoc, setUploadedDoc] = useState<TDocument | null>(null);
   const generateSummaryMutation = LessonsService.useGenerateSummary();
-  const currentSummary = uploadedDoc ? summaries.find((s) => s.documentId === uploadedDoc.id) : null
+  const updateSubjectMutation = LessonsService.useUpdateSubject();
+  const currentSummary = selectedSubject?.lecture?.summary
 
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = async (file: File) => {
+
+    const blob = await file.arrayBuffer().then((buffer) => new Blob([buffer]));
+
     const doc: TDocument = {
-      id: `lecture-${Date.now()}`,
+      id: `doc-${Date.now()}`,
       name: file.name,
       type: file.name.endsWith(".pdf") ? "pdf" : "doc",
       uploadedAt: new Date(),
-      content: "Sample lecture notes or transcript content for processing...",
+      blob: blob
     }
-    setUploadedDoc(doc)
-    addDocument("lecture", doc)
+    setUploadedDoc(doc);
+    updateSubjectMutation.mutate({
+      id: selectedSubject.id,
+      data: {
+        ...selectedSubject,
+        lecture: {
+          ...selectedSubject.lecture,
+          document: doc
+        }
+      }
+    })
   }
 
   const handleGenerateSummary = async () => {
-    if (!uploadedDoc) return
+    if (!uploadedDoc) return;
 
     generateSummaryMutation.mutate({
-      documentId: uploadedDoc.id
+      document: uploadedDoc
     }, {
       onSuccess: (data) => {
-        addSummary(data)
+        updateSubjectMutation.mutate({
+          id: selectedSubject.id,
+          data: {
+            ...selectedSubject,
+            lecture: {
+              ...selectedSubject.lecture!,
+              summary: data,
+            }
+          }
+        })
       }
     })
   }

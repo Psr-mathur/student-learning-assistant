@@ -3,16 +3,24 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import LessonsService from '@/services/lessons/lessons.service'
 import { BookOpen, CheckCircle2 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
-import { useLessonsStore } from '../lessons.store'
+import { useCurrentSubjectStore } from '../lessons.store'
 
 export function ClassSetupPage() {
   const navigate = useNavigate();
-  const { selectedSubject, setSelectedSubject } = useLessonsStore()
+  const { selectedSubject, setSelectedSubject } = useCurrentSubjectStore()
   const [hoveredSubject, setHoveredSubject] = useState<string | null>(null);
   const { data: subjects } = LessonsService.useGetSubjects({});
+
+  useEffect(() => {
+    if (!selectedSubject.id) {
+      if (subjects && subjects.length > 0) {
+        setSelectedSubject(subjects[0]);
+      }
+    }
+  }, [subjects, selectedSubject.id, setSelectedSubject]);
 
   return (
     <div className="container mx-auto p-8 max-w-6xl">

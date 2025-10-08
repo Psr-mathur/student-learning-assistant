@@ -42,7 +42,8 @@ export function Sidebar() {
 
       <div className="border-t border-sidebar-border p-4">
         <div className="text-xs text-muted-foreground">
-          <p className="font-medium text-sidebar-foreground mb-1">Student Portal</p>
+          <p className="font-medium text-sidebar-foreground mb-1">
+            {(sessionStorage.getItem('role') + " " + "Portal")?.toUpperCase()}</p>
           <p>Track your learning progress</p>
         </div>
       </div>

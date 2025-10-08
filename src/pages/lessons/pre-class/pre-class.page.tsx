@@ -11,38 +11,60 @@ import { BookOpen, FileText, HelpCircle } from "lucide-react"
 import { useState } from "react"
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
-import { useLessonsStore } from '../lessons.store'
+import { useCurrentSubjectStore } from '../lessons.store'
 
 export function PreClassPage() {
-  const { selectedSubject, addDocument, summaries, addSummary, quizzes, addQuiz } = useLessonsStore();
+  const { selectedSubject } = useCurrentSubjectStore();
   const navigate = useNavigate();
   const [uploadedDoc, setUploadedDoc] = useState<TDocument | null>(null);
   const generateSummaryMutation = LessonsService.useGenerateSummary();
-  const generateQuizMutation = LessonsService.useGenerateQuiz();
+  const generateQuizMutation = LessonsService.useGenerateQuizQuestions();
+  const updateSubjectMutation = LessonsService.useUpdateSubject();
 
-  const currentSummary = uploadedDoc ? summaries.find((s) => s.documentId === uploadedDoc.id) : null
-  const currentQuiz = uploadedDoc ? quizzes.find((q) => q.documentId === uploadedDoc.id) : null
+  const currentSummary = selectedSubject?.preClass?.summary
+  const currentQuizQuestions = selectedSubject?.preClass?.quizQuestions
 
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = async (file: File) => {
+
+    const blob = await file.arrayBuffer().then((buffer) => new Blob([buffer]));
+
     const doc: TDocument = {
       id: `doc-${Date.now()}`,
       name: file.name,
       type: file.name.endsWith(".pdf") ? "pdf" : "doc",
       uploadedAt: new Date(),
-      content: "Sample document content for processing...",
+      blob: blob
     }
-    setUploadedDoc(doc)
-    addDocument("pre-class", doc)
+    setUploadedDoc(doc);
+    updateSubjectMutation.mutate({
+      id: selectedSubject.id,
+      data: {
+        ...selectedSubject,
+        preClass: {
+          ...selectedSubject.preClass,
+          document: doc
+        }
+      }
+    })
   }
 
   const handleGenerateSummary = async () => {
     if (!uploadedDoc) return;
 
     generateSummaryMutation.mutate({
-      documentId: uploadedDoc.id
+      document: uploadedDoc
     }, {
       onSuccess: (data) => {
-        addSummary(data)
+        updateSubjectMutation.mutate({
+          id: selectedSubject.id,
+          data: {
+            ...selectedSubject,
+            preClass: {
+              ...selectedSubject.preClass!,
+              summary: data,
+            }
+          }
+        })
       }
     })
   }
@@ -51,10 +73,19 @@ export function PreClassPage() {
     if (!uploadedDoc) return
 
     generateQuizMutation.mutate({
-      documentId: uploadedDoc.id
+      document: uploadedDoc
     }, {
       onSuccess: (data) => {
-        addQuiz(data)
+        updateSubjectMutation.mutate({
+          id: selectedSubject.id,
+          data: {
+            ...selectedSubject,
+            preClass: {
+              ...selectedSubject.preClass!,
+              quizQuestions: data,
+            }
+          }
+        })
       }
     })
   }
@@ -152,7 +183,7 @@ export function PreClassPage() {
             </TabsContent>
 
             <TabsContent value="quiz" className="space-y-4">
-              {!currentQuiz ? (
+              {!currentQuizQuestions ? (
                 <Card>
                   <CardContent className="pt-6">
                     <div className="text-center py-8">
@@ -174,7 +205,7 @@ export function PreClassPage() {
                   </CardContent>
                 </Card>
               ) : (
-                <QuizDisplay quiz={currentQuiz} />
+                <QuizDisplay quiz={currentQuizQuestions} />
               )}
             </TabsContent>
           </Tabs>
