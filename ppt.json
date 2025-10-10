@@ -1,0 +1,170 @@
+[
+	{
+		"props": {
+			"indent": -27,
+			"level": "0",
+			"marginLeft": 36,
+			"align": "l",
+			"buChar": "●",
+			"spaceBefore": 0,
+			"spaceAfter": 0
+		},
+		"inheritProps": {
+			"level": "0",
+			"align": "l",
+			"lineHeight": 1.15,
+			"indent": -24.5,
+			"marginLeft": 36,
+			"buChar": "●",
+			"spaceBefore": 0,
+			"spaceAfter": 0
+		},
+		"inheritRProps": {
+			"bold": false,
+			"italic": false,
+			"size": 13,
+			"underline": "none",
+			"cap": "none",
+			"strike": "noStrike",
+			"color": {
+				"type": "solidFill",
+				"color": "#233A44",
+				"alpha": 1
+			}
+		},
+		"endParaRProps": {
+			"size": 18,
+			"color": {
+				"type": "solidFill",
+				"color": "#000000",
+				"alpha": 1
+			}
+		},
+		"rows": [
+			{
+				"props": {
+					"lang": "en",
+					"size": 18,
+					"color": {
+						"type": "solidFill",
+						"color": "#000000",
+						"alpha": 1
+					}
+				},
+				"text": "Nowadays in chemical and polymer industry, Continuous Stirred Tank Reactor (CSTR) plays a significant role where all the chemical reactions take place. "
+			}
+		]
+	},
+	{
+		"props": {
+			"indent": -27,
+			"level": "0",
+			"marginLeft": 36,
+			"align": "l",
+			"buChar": "●",
+			"spaceBefore": 0,
+			"spaceAfter": 0
+		},
+		"inheritProps": {
+			"level": "0",
+			"align": "l",
+			"lineHeight": 1.15,
+			"indent": -24.5,
+			"marginLeft": 36,
+			"buChar": "●",
+			"spaceBefore": 0,
+			"spaceAfter": 0
+		},
+		"inheritRProps": {
+			"bold": false,
+			"italic": false,
+			"size": 13,
+			"underline": "none",
+			"cap": "none",
+			"strike": "noStrike",
+			"color": {
+				"type": "solidFill",
+				"color": "#233A44",
+				"alpha": 1
+			}
+		},
+		"endParaRProps": {
+			"size": 18,
+			"color": {
+				"type": "solidFill",
+				"color": "#000000",
+				"alpha": 1
+			}
+		},
+		"rows": [
+			{
+				"props": {
+					"lang": "en",
+					"size": 18,
+					"color": {
+						"type": "solidFill",
+						"color": "#000000",
+						"alpha": 1
+					}
+				},
+				"text": "It is a unit of the chemical plant where chemical transformations take place to generate a desired final product at specified reaction rate using a given chemistry."
+			}
+		]
+	},
+	{
+		"props": {
+			"indent": -27,
+			"level": "0",
+			"marginLeft": 36,
+			"align": "l",
+			"buChar": "●",
+			"spaceBefore": 0,
+			"spaceAfter": 0
+		},
+		"inheritProps": {
+			"level": "0",
+			"align": "l",
+			"lineHeight": 1.15,
+			"indent": -24.5,
+			"marginLeft": 36,
+			"buChar": "●",
+			"spaceBefore": 0,
+			"spaceAfter": 0
+		},
+		"inheritRProps": {
+			"bold": false,
+			"italic": false,
+			"size": 13,
+			"underline": "none",
+			"cap": "none",
+			"strike": "noStrike",
+			"color": {
+				"type": "solidFill",
+				"color": "#233A44",
+				"alpha": 1
+			}
+		},
+		"endParaRProps": {
+			"size": 18,
+			"color": {
+				"type": "solidFill",
+				"color": "#000000",
+				"alpha": 1
+			}
+		},
+		"rows": [
+			{
+				"props": {
+					"lang": "en",
+					"size": 18,
+					"color": {
+						"type": "solidFill",
+						"color": "#000000",
+						"alpha": 1
+					}
+				},
+				"text": "To analyze, design and control the parameters of the chemical reactor is a challenging task in chemical engineering since it is considered to be a highly nonlinear model."
+			}
+		]
+	}
+]

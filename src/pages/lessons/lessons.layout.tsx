@@ -7,7 +7,7 @@ export const LessonsLayout = () => {
 
   const isClassSetupRoute = location.pathname === "/lessons/class-setup";
 
-  if (!selectedSubject && !isClassSetupRoute) {
+  if (!selectedSubject.id && !isClassSetupRoute) {
     return <Navigate to="/lessons/class-setup" replace />;
   }
 

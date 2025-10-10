@@ -10,9 +10,9 @@ import { useCurrentSubjectStore } from '../lessons.store'
 export default function PracticePage() {
   const { selectedSubject } = useCurrentSubjectStore()
 
-  const theoryQuestions: TTheoryQuestion[] = []
+  const theoryQuestions: TTheoryQuestion[] = selectedSubject.training?.theoryQuestions ?? []
 
-  const codingQuestions: TCodingQuestion[] = []
+  const codingQuestions: TCodingQuestion[] = selectedSubject.training?.codingQuestions ?? []
 
   const [solutions, setSolutions] = useState<Record<string, string>>({});
 

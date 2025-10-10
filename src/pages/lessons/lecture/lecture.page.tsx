@@ -8,16 +8,14 @@ import { Spinner } from "@/components/ui/spinner"
 import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from '@/types/lessons.types'
 import { FileText, Mic } from "lucide-react"
-import { useState } from "react"
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useCurrentSubjectStore } from '../lessons.store'
 
 export default function LecturePage() {
-  const { selectedSubject } = useCurrentSubjectStore();
+  const { selectedSubject, setSelectedSubject } = useCurrentSubjectStore();
   const navigate = useNavigate();
-  const [uploadedDoc, setUploadedDoc] = useState<TDocument | null>(null);
-  const generateSummaryMutation = LessonsService.useGenerateSummary();
+  const generateFromAIMutation = LessonsService.useGenerateFromAI();
   const updateSubjectMutation = LessonsService.useUpdateSubject();
   const currentSummary = selectedSubject?.lecture?.summary
 
@@ -28,13 +26,11 @@ export default function LecturePage() {
     const doc: TDocument = {
       id: `doc-${Date.now()}`,
       name: file.name,
-      type: file.name.endsWith(".pdf") ? "pdf" : "doc",
+      type: "pdf",
       uploadedAt: new Date(),
       blob: blob
     }
-    setUploadedDoc(doc);
     updateSubjectMutation.mutate({
-      id: selectedSubject.id,
       data: {
         ...selectedSubject,
         lecture: {
@@ -42,24 +38,32 @@ export default function LecturePage() {
           document: doc
         }
       }
+    }, {
+      onSuccess: (data) => {
+        setSelectedSubject(data);
+      }
     })
   }
 
   const handleGenerateSummary = async () => {
-    if (!uploadedDoc) return;
+    if (!selectedSubject.lecture?.document) return;
 
-    generateSummaryMutation.mutate({
-      document: uploadedDoc
+    generateFromAIMutation.mutate({
+      document: selectedSubject.lecture.document,
+      options: ["summary"]
     }, {
       onSuccess: (data) => {
         updateSubjectMutation.mutate({
-          id: selectedSubject.id,
           data: {
             ...selectedSubject,
             lecture: {
               ...selectedSubject.lecture!,
-              summary: data,
+              summary: data.summary,
             }
+          }
+        }, {
+          onSuccess: (data) => {
+            setSelectedSubject(data);
           }
         })
       }
@@ -107,11 +111,11 @@ export default function LecturePage() {
             <CardDescription>Upload your lecture notes or recording transcripts</CardDescription>
           </CardHeader>
           <CardContent>
-            <FileUpload onFileSelect={handleFileSelect} disabled={generateSummaryMutation.isPending} />
+            <FileUpload onFileSelect={handleFileSelect} disabled={generateFromAIMutation.isPending} />
           </CardContent>
         </Card>
 
-        {uploadedDoc && (
+        {selectedSubject.lecture?.document && (
           <div className="space-y-4">
             {!currentSummary ? (
               <Card>
@@ -119,8 +123,8 @@ export default function LecturePage() {
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground mb-4">No summary generated yet</p>
-                    <Button onClick={handleGenerateSummary} disabled={generateSummaryMutation.isPending}>
-                      {generateSummaryMutation.isPending ? (
+                    <Button onClick={handleGenerateSummary} disabled={generateFromAIMutation.isPending}>
+                      {generateFromAIMutation.isPending ? (
                         <>
                           <Spinner className="mr-2" />
                           Generating Summary...
@@ -141,7 +145,7 @@ export default function LecturePage() {
       <div className="flex justify-between mt-4">
         <Button onClick={() => navigate('/lessons/training')}>Prev</Button>
         <Button onClick={() => {
-          if (!uploadedDoc) {
+          if (!selectedSubject.lecture?.document) {
             toast.error('Please upload a lecture material')
             return
           }

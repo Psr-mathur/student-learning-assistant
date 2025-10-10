@@ -5,20 +5,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { documentToFile } from '@/lib/ai'
 import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from "@/types/lessons.types"
 import { BookOpen, FileText, HelpCircle } from "lucide-react"
-import { useState } from "react"
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useCurrentSubjectStore } from '../lessons.store'
 
 export function PreClassPage() {
-  const { selectedSubject } = useCurrentSubjectStore();
+  const { selectedSubject, setSelectedSubject } = useCurrentSubjectStore();
   const navigate = useNavigate();
-  const [uploadedDoc, setUploadedDoc] = useState<TDocument | null>(null);
-  const generateSummaryMutation = LessonsService.useGenerateSummary();
-  const generateQuizMutation = LessonsService.useGenerateQuizQuestions();
+  const generateFromAIMutation = LessonsService.useGenerateFromAI();
   const updateSubjectMutation = LessonsService.useUpdateSubject();
 
   const currentSummary = selectedSubject?.preClass?.summary
@@ -31,13 +29,12 @@ export function PreClassPage() {
     const doc: TDocument = {
       id: `doc-${Date.now()}`,
       name: file.name,
-      type: file.name.endsWith(".pdf") ? "pdf" : "doc",
+      type: "pdf",
       uploadedAt: new Date(),
       blob: blob
     }
-    setUploadedDoc(doc);
+
     updateSubjectMutation.mutate({
-      id: selectedSubject.id,
       data: {
         ...selectedSubject,
         preClass: {
@@ -45,45 +42,33 @@ export function PreClassPage() {
           document: doc
         }
       }
-    })
-  }
-
-  const handleGenerateSummary = async () => {
-    if (!uploadedDoc) return;
-
-    generateSummaryMutation.mutate({
-      document: uploadedDoc
     }, {
       onSuccess: (data) => {
-        updateSubjectMutation.mutate({
-          id: selectedSubject.id,
-          data: {
-            ...selectedSubject,
-            preClass: {
-              ...selectedSubject.preClass!,
-              summary: data,
-            }
-          }
-        })
+        setSelectedSubject(data);
       }
     })
   }
 
-  const handleGenerateQuiz = async () => {
-    if (!uploadedDoc) return
+  const handleGenerateSummaryAndQuiz = async () => {
+    if (!selectedSubject.preClass?.document) return;
 
-    generateQuizMutation.mutate({
-      document: uploadedDoc
+    generateFromAIMutation.mutate({
+      document: selectedSubject.preClass.document,
+      options: ["summary", "quiz"]
     }, {
       onSuccess: (data) => {
         updateSubjectMutation.mutate({
-          id: selectedSubject.id,
           data: {
             ...selectedSubject,
             preClass: {
               ...selectedSubject.preClass!,
-              quizQuestions: data,
+              summary: data.summary,
+              quizQuestions: data.quiz,
             }
+          }
+        }, {
+          onSuccess: (data) => {
+            setSelectedSubject(data);
           }
         })
       }
@@ -145,12 +130,13 @@ export function PreClassPage() {
           <CardContent>
             <FileUpload
               onFileSelect={handleFileSelect}
-              disabled={generateSummaryMutation.isPending || generateQuizMutation.isPending}
+              disabled={generateFromAIMutation.isPending}
+              defaultFile={selectedSubject.preClass?.document ? documentToFile(selectedSubject.preClass.document) : undefined}
             />
           </CardContent>
         </Card>
 
-        {uploadedDoc && (
+        {selectedSubject.preClass?.document && (
           <Tabs defaultValue="summary" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="summary">Summary</TabsTrigger>
@@ -164,14 +150,17 @@ export function PreClassPage() {
                     <div className="text-center py-8">
                       <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground mb-4">No summary generated yet</p>
-                      <Button onClick={handleGenerateSummary} disabled={generateSummaryMutation.isPending}>
-                        {generateSummaryMutation.isPending ? (
+                      <Button
+                        onClick={handleGenerateSummaryAndQuiz}
+                        disabled={generateFromAIMutation.isPending}
+                      >
+                        {generateFromAIMutation.isPending ? (
                           <>
                             <Spinner className="mr-2" />
-                            Generating Summary...
+                            Generating Summary and Quiz...
                           </>
                         ) : (
-                          "Generate Summary"
+                          "Generate Summary and Quiz"
                         )}
                       </Button>
                     </div>
@@ -190,15 +179,15 @@ export function PreClassPage() {
                       <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground mb-4">No quiz generated yet</p>
                       <Button
-                        onClick={handleGenerateQuiz}
-                        disabled={generateQuizMutation.isPending}>
-                        {generateQuizMutation.isPending ? (
+                        onClick={handleGenerateSummaryAndQuiz}
+                        disabled={generateFromAIMutation.isPending}>
+                        {generateFromAIMutation.isPending ? (
                           <>
                             <Spinner className="mr-2" />
-                            Generating Quiz...
+                            Generating Summary and Quiz...
                           </>
                         ) : (
-                          "Generate Quiz"
+                          "Generate Summary and Quiz"
                         )}
                       </Button>
                     </div>
@@ -215,7 +204,7 @@ export function PreClassPage() {
       <div className="flex justify-between mt-4">
         <Button onClick={() => navigate('/lessons/class-setup')}>Prev</Button>
         <Button onClick={() => {
-          if (!uploadedDoc) {
+          if (!selectedSubject.preClass?.document) {
             toast.error('Please upload a pre-class document')
             return
           }

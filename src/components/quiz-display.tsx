@@ -1,13 +1,13 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { TQuiz } from '@/types/lessons.types'
-import { CheckCircle2, HelpCircle, XCircle } from "lucide-react"
+import type { TQuizQuestion } from '@/types/lessons.types'
+import { CheckCircle2, XCircle } from "lucide-react"
 import { useState } from "react"
 import { QuizQuestion } from './quiz-question'
 
 interface QuizDisplayProps {
-  quiz: TQuiz
+  quiz: TQuizQuestion[]
 }
 
 export function QuizDisplay({ quiz }: QuizDisplayProps) {
@@ -15,9 +15,9 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({})
   const [showResults, setShowResults] = useState(false)
 
-  const question = quiz.questions[currentQuestion]
+  const question = quiz[currentQuestion]
   const isAnswered = selectedAnswers[currentQuestion] !== undefined
-  const isLastQuestion = currentQuestion === quiz.questions.length - 1
+  const isLastQuestion = currentQuestion === quiz.length - 1
 
   const handleNext = () => {
     if (isLastQuestion) {
@@ -33,12 +33,12 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
 
   const calculateScore = () => {
     let correct = 0
-    quiz.questions.forEach((q, index) => {
+    quiz.forEach((q, index) => {
       if (selectedAnswers[index] === q.correctAnswer) {
         correct++
       }
     })
-    return { correct, total: quiz.questions.length, percentage: (correct / quiz.questions.length) * 100 }
+    return { correct, total: quiz.length, percentage: (correct / quiz.length) * 100 }
   }
 
   if (showResults) {
@@ -57,7 +57,7 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
           </div>
 
           <div className="space-y-4">
-            {quiz.questions.map((q, index) => {
+            {quiz.map((q, index) => {
               const userAnswer = selectedAnswers[index]
               const isCorrect = userAnswer === q.correctAnswer
 
@@ -84,12 +84,12 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
                               Correct answer: <span className="text-accent">{q.options[q.correctAnswer]}</span>
                             </p>
                           )}
-                          {q.explanation && (
+                          {/* {q.explanation && (
                             <p className="text-muted-foreground italic mt-2">
                               <HelpCircle className="h-3 w-3 inline mr-1" />
                               {q.explanation}
                             </p>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </div>
@@ -113,14 +113,14 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
       </Card>
     )
   }
-
+  console.log(selectedAnswers);
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Quiz</CardTitle>
           <Badge variant="secondary">
-            Question {currentQuestion + 1} of {quiz.questions.length}
+            Question {currentQuestion + 1} of {quiz.length}
           </Badge>
         </div>
       </CardHeader>
@@ -131,6 +131,7 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
           onValueChange={(value) =>
             setSelectedAnswers((prev) => ({ ...prev, [currentQuestion]: Number.parseInt(value) }))
           }
+          key={question.id}
         />
 
         <div className="flex justify-between gap-3">

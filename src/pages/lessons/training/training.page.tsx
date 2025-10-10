@@ -1,26 +1,26 @@
 import { FileUpload } from "@/components/file-upload"
-import { PPTPreview } from "@/components/ppt-preview"
 import { QuizDisplay } from "@/components/quiz-display"
 import { SummaryDisplay } from "@/components/summary-display"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { documentToFile } from '@/lib/ai'
 import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from '@/types/lessons.types'
 import { FileText, HelpCircle } from "lucide-react"
-import { useState } from "react"
+import { init } from 'pptx-preview'
+import { useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useCurrentSubjectStore } from '../lessons.store'
 
 export default function TrainingPage() {
-  const { selectedSubject } = useCurrentSubjectStore();
+  const { selectedSubject, setSelectedSubject } = useCurrentSubjectStore();
   const navigate = useNavigate();
-  const [uploadedDoc, setUploadedDoc] = useState<TDocument | null>(null);
-  const generateQuizMutation = LessonsService.useGenerateQuizQuestions();
-  const generateSummaryMutation = LessonsService.useGenerateSummary();
+  const generateFromAIMutation = LessonsService.useGenerateFromAI();
   const updateSubjectMutation = LessonsService.useUpdateSubject();
+  const pptWrapperRef = useRef<HTMLDivElement>(null);
 
   const currentSummary = selectedSubject?.training?.summary
   const currentQuizQuestions = selectedSubject?.training?.quizQuestions
@@ -31,13 +31,11 @@ export default function TrainingPage() {
     const doc: TDocument = {
       id: `doc-${Date.now()}`,
       name: file.name,
-      type: file.name.endsWith(".pdf") ? "pdf" : "doc",
+      type: "ppt",
       uploadedAt: new Date(),
       blob: blob
     }
-    setUploadedDoc(doc);
     updateSubjectMutation.mutate({
-      id: selectedSubject.id,
       data: {
         ...selectedSubject,
         training: {
@@ -45,47 +43,54 @@ export default function TrainingPage() {
           document: doc
         }
       }
-    })
-  }
-
-  const handleGenerateSummary = async () => {
-    if (!uploadedDoc) return;
-
-    generateSummaryMutation.mutate({
-      document: uploadedDoc
     }, {
       onSuccess: (data) => {
-        updateSubjectMutation.mutate({
-          id: selectedSubject.id,
-          data: {
-            ...selectedSubject,
-            training: {
-              ...selectedSubject.training!,
-              summary: data,
-            }
-          }
-        })
+        setSelectedSubject(data);
       }
     })
   }
 
-  const handleGenerateQuiz = async () => {
-    if (!uploadedDoc) return
+  useEffect(() => {
+    if (selectedSubject?.training?.document && pptWrapperRef.current) {
+      const pptxViewer = init(pptWrapperRef.current, {
+        width: 1080,
+        height: 640,
+        mode: "list"
+      })
+      selectedSubject.training.document.blob.arrayBuffer().then(async (buffer) => {
+        await pptxViewer.preview(buffer);
+      });
+    }
+  }, [selectedSubject.training?.document])
 
-    generateQuizMutation.mutate({
-      document: uploadedDoc
+  const handleGenerateSummaryAndQuiz = async () => {
+    console.log('hello')
+    if (!selectedSubject?.training?.document) return;
+    console.log('hello2')
+    generateFromAIMutation.mutate({
+      document: selectedSubject?.training?.document,
+      options: ["summary", "quiz", "coding", "theory"]
     }, {
       onSuccess: (data) => {
         updateSubjectMutation.mutate({
-          id: selectedSubject.id,
           data: {
             ...selectedSubject,
             training: {
               ...selectedSubject.training!,
-              quizQuestions: data,
+              summary: data.summary,
+              quizQuestions: data.quiz,
+              theoryQuestions: data.theory,
+              codingQuestions: data.coding
             }
           }
+        }, {
+          onSuccess: (data) => {
+            setSelectedSubject(data);
+          }
         })
+      },
+      onError: (error) => {
+        toast.error(error.message);
       }
     })
   }
@@ -109,15 +114,27 @@ export default function TrainingPage() {
           <CardContent>
             <FileUpload
               onFileSelect={handleFileSelect}
-              accept=".ppt,.pptx"
-              disabled={generateSummaryMutation.isPending || generateQuizMutation.isPending}
+              accept=".pptx"
+              disabled={generateFromAIMutation.isPending}
+              defaultFile={selectedSubject?.training?.document ? documentToFile(selectedSubject?.training?.document) : undefined}
             />
           </CardContent>
         </Card>
+        {/* Regenerate Button */}
+        <Button onClick={handleGenerateSummaryAndQuiz} disabled={generateFromAIMutation.isPending}>
+          {generateFromAIMutation.isPending ? (
+            <>
+              <Spinner className="mr-2" />
+              Regenerating Summary and Quiz...
+            </>
+          ) : (
+            "Regenerate Summary and Quiz"
+          )}
+        </Button>
 
-        {uploadedDoc && (
+        {selectedSubject?.training?.document && (
           <>
-            <PPTPreview document={uploadedDoc} />
+            <div ref={pptWrapperRef} />
 
             <Tabs defaultValue="summary" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
@@ -132,14 +149,14 @@ export default function TrainingPage() {
                       <div className="text-center py-8">
                         <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                         <p className="text-muted-foreground mb-4">No summary generated yet</p>
-                        <Button onClick={handleGenerateSummary} disabled={generateSummaryMutation.isPending}>
-                          {generateSummaryMutation.isPending ? (
+                        <Button onClick={handleGenerateSummaryAndQuiz} disabled={generateFromAIMutation.isPending}>
+                          {generateFromAIMutation.isPending ? (
                             <>
                               <Spinner className="mr-2" />
-                              Generating Summary...
+                              Generating Summary and Quiz...
                             </>
                           ) : (
-                            "Generate Summary"
+                            "Generate Summary and Quiz"
                           )}
                         </Button>
                       </div>
@@ -157,14 +174,14 @@ export default function TrainingPage() {
                       <div className="text-center py-8">
                         <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                         <p className="text-muted-foreground mb-4">No quiz generated yet</p>
-                        <Button onClick={handleGenerateQuiz} disabled={generateQuizMutation.isPending}>
-                          {generateQuizMutation.isPending ? (
+                        <Button onClick={handleGenerateSummaryAndQuiz} disabled={generateFromAIMutation.isPending}>
+                          {generateFromAIMutation.isPending ? (
                             <>
                               <Spinner className="mr-2" />
-                              Generating Quiz...
+                              Generating Summary and Quiz...
                             </>
                           ) : (
-                            "Generate Quiz"
+                            "Generate Summary and Quiz"
                           )}
                         </Button>
                       </div>
@@ -182,7 +199,7 @@ export default function TrainingPage() {
       <div className="flex justify-between mt-4">
         <Button onClick={() => navigate('/lessons/pre-class')}>Prev</Button>
         <Button onClick={() => {
-          if (!uploadedDoc) {
+          if (!selectedSubject?.training?.document) {
             toast.error('Please upload a training presentation')
             return
           }

@@ -8,17 +8,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from '@/types/lessons.types'
 import { BookOpen, FileText, HelpCircle } from "lucide-react"
-import { useState } from "react"
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useCurrentSubjectStore } from '../lessons.store'
 
 export default function PostClassPage() {
-  const { selectedSubject } = useCurrentSubjectStore()
+  const { selectedSubject, setSelectedSubject } = useCurrentSubjectStore()
   const navigate = useNavigate();
-  const [uploadedDoc, setUploadedDoc] = useState<TDocument | null>(null)
-  const generateQuizMutation = LessonsService.useGenerateQuizQuestions();
-  const generateSummaryMutation = LessonsService.useGenerateSummary();
+  const generateFromAIMutation = LessonsService.useGenerateFromAI();
   const updateSubjectMutation = LessonsService.useUpdateSubject();
 
   const currentSummary = selectedSubject?.postClass?.summary
@@ -31,13 +28,11 @@ export default function PostClassPage() {
     const doc: TDocument = {
       id: `doc-${Date.now()}`,
       name: file.name,
-      type: file.name.endsWith(".pdf") ? "pdf" : "doc",
+      type: "pdf",
       uploadedAt: new Date(),
       blob: blob
     }
-    setUploadedDoc(doc);
     updateSubjectMutation.mutate({
-      id: selectedSubject.id,
       data: {
         ...selectedSubject,
         postClass: {
@@ -45,45 +40,33 @@ export default function PostClassPage() {
           document: doc
         }
       }
-    })
-  }
-
-  const handleGenerateSummary = async () => {
-    if (!uploadedDoc) return;
-
-    generateSummaryMutation.mutate({
-      document: uploadedDoc
     }, {
       onSuccess: (data) => {
-        updateSubjectMutation.mutate({
-          id: selectedSubject.id,
-          data: {
-            ...selectedSubject,
-            postClass: {
-              ...selectedSubject.postClass!,
-              summary: data,
-            }
-          }
-        })
+        setSelectedSubject(data);
       }
     })
   }
 
-  const handleGenerateQuiz = async () => {
-    if (!uploadedDoc) return
+  const handleGenerateSummaryAndQuiz = async () => {
+    if (!selectedSubject.postClass?.document) return;
 
-    generateQuizMutation.mutate({
-      document: uploadedDoc
+    generateFromAIMutation.mutate({
+      document: selectedSubject.postClass.document,
+      options: ["summary", "quiz"],
     }, {
       onSuccess: (data) => {
         updateSubjectMutation.mutate({
-          id: selectedSubject.id,
           data: {
             ...selectedSubject,
             postClass: {
               ...selectedSubject.postClass!,
-              quizQuestions: data,
+              summary: data.summary,
+              quizQuestions: data.quiz,
             }
+          }
+        }, {
+          onSuccess: (data) => {
+            setSelectedSubject(data);
           }
         })
       }
@@ -143,11 +126,11 @@ export default function PostClassPage() {
             <CardDescription>Upload your review materials, homework, or additional notes</CardDescription>
           </CardHeader>
           <CardContent>
-            <FileUpload onFileSelect={handleFileSelect} disabled={generateSummaryMutation.isPending || generateQuizMutation.isPending} />
+            <FileUpload onFileSelect={handleFileSelect} disabled={generateFromAIMutation.isPending} />
           </CardContent>
         </Card>
 
-        {uploadedDoc && (
+        {selectedSubject.postClass?.document && (
           <Tabs defaultValue="summary" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="summary">Summary</TabsTrigger>
@@ -161,8 +144,8 @@ export default function PostClassPage() {
                     <div className="text-center py-8">
                       <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground mb-4">No summary generated yet</p>
-                      <Button onClick={handleGenerateSummary} disabled={generateSummaryMutation.isPending}>
-                        {generateSummaryMutation.isPending ? (
+                      <Button onClick={handleGenerateSummaryAndQuiz} disabled={generateFromAIMutation.isPending}>
+                        {generateFromAIMutation.isPending ? (
                           <>
                             <Spinner className="mr-2" />
                             Generating Summary...
@@ -186,8 +169,8 @@ export default function PostClassPage() {
                     <div className="text-center py-8">
                       <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground mb-4">No quiz generated yet</p>
-                      <Button onClick={handleGenerateQuiz} disabled={generateQuizMutation.isPending}>
-                        {generateQuizMutation.isPending ? (
+                      <Button onClick={handleGenerateSummaryAndQuiz} disabled={generateFromAIMutation.isPending}>
+                        {generateFromAIMutation.isPending ? (
                           <>
                             <Spinner className="mr-2" />
                             Generating Quiz...
@@ -210,7 +193,7 @@ export default function PostClassPage() {
       <div className="flex justify-between mt-4">
         <Button onClick={() => navigate('/lessons/lecture')}>Prev</Button>
         <Button onClick={() => {
-          if (!uploadedDoc) {
+          if (!selectedSubject.postClass?.document) {
             toast.error('Please upload a post-class document')
             return
           }

@@ -11,6 +11,7 @@ interface FileUploadProps {
   accept?: string
   maxSize?: number
   disabled?: boolean
+  defaultFile?: File | null
 }
 
 export function FileUpload({
@@ -18,9 +19,10 @@ export function FileUpload({
   accept = ".pdf,.doc,.docx,.ppt,.pptx",
   maxSize = 10,
   disabled,
+  defaultFile = null
 }: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(defaultFile)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleDrag = (e: React.DragEvent) => {

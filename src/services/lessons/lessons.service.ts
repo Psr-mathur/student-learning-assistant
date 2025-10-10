@@ -1,4 +1,5 @@
 import { createMutationHook, createQueryHook } from '@/hooks/tanstack-hook';
+import { generateFromAI } from '@/lib/ai';
 import lessonsApi from './lessons.api';
 
 export default class LessonsService {
@@ -35,5 +36,10 @@ export default class LessonsService {
   static useGenerateCodingQuestions = createMutationHook({
     mutationKey: ['lessons', 'codingQuestions'],
     mutationFn: lessonsApi.generateCodingQuestions,
+  });
+
+  static useGenerateFromAI = createMutationHook({
+    mutationKey: ['lessons', 'generateFromAI'],
+    mutationFn: generateFromAI,
   });
 }
