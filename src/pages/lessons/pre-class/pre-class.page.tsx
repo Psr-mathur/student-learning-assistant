@@ -135,7 +135,17 @@ export function PreClassPage() {
             />
           </CardContent>
         </Card>
-
+        {/* Regenerate Button */}
+        <Button onClick={handleGenerateSummaryAndQuiz} disabled={generateFromAIMutation.isPending}>
+          {generateFromAIMutation.isPending ? (
+            <>
+              <Spinner className="mr-2" />
+              Regenerating Summary and Quiz...
+            </>
+          ) : (
+            "Regenerate Summary and Quiz"
+          )}
+        </Button>
         {selectedSubject.preClass?.document && (
           <Tabs defaultValue="summary" className="w-full">
             <TabsList className="grid w-full grid-cols-2">

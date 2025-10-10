@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { documentToFile } from '@/lib/ai'
 import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from '@/types/lessons.types'
 import { BookOpen, FileText, HelpCircle } from "lucide-react"
@@ -126,7 +127,11 @@ export default function PostClassPage() {
             <CardDescription>Upload your review materials, homework, or additional notes</CardDescription>
           </CardHeader>
           <CardContent>
-            <FileUpload onFileSelect={handleFileSelect} disabled={generateFromAIMutation.isPending} />
+            <FileUpload
+              onFileSelect={handleFileSelect}
+              disabled={generateFromAIMutation.isPending}
+              defaultFile={selectedSubject.postClass?.document && documentToFile(selectedSubject.postClass.document)}
+            />
           </CardContent>
         </Card>
 

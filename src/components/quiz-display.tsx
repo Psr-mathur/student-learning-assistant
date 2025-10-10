@@ -1,45 +1,68 @@
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { TQuizQuestion } from '@/types/lessons.types'
-import { CheckCircle2, XCircle } from "lucide-react"
-import { useState } from "react"
-import { QuizQuestion } from './quiz-question'
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { TQuizQuestion } from "@/types/lessons.types";
+import { CheckCircle2, TimerIcon, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { QuizQuestion } from "./quiz-question";
 
 interface QuizDisplayProps {
-  quiz: TQuizQuestion[]
+  quiz: TQuizQuestion[];
 }
 
 export function QuizDisplay({ quiz }: QuizDisplayProps) {
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({})
-  const [showResults, setShowResults] = useState(false)
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
+  const [showResults, setShowResults] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(30);
 
-  const question = quiz[currentQuestion]
-  const isAnswered = selectedAnswers[currentQuestion] !== undefined
-  const isLastQuestion = currentQuestion === quiz.length - 1
+  const question = quiz[currentQuestion];
+  const isAnswered = selectedAnswers[currentQuestion] !== undefined;
+  const isLastQuestion = currentQuestion === quiz.length - 1;
 
   const handleNext = () => {
     if (isLastQuestion) {
-      setShowResults(true)
+      setShowResults(true);
     } else {
-      setCurrentQuestion(currentQuestion + 1)
+      setCurrentQuestion((prev) => prev + 1);
+      setRemainingTime(30);
     }
-  }
+  };
 
   const handlePrevious = () => {
-    setCurrentQuestion(currentQuestion - 1)
-  }
+    if (currentQuestion > 0) {
+      setCurrentQuestion((prev) => prev - 1);
+      setRemainingTime(30);
+    }
+  };
 
   const calculateScore = () => {
-    let correct = 0
+    let correct = 0;
     quiz.forEach((q, index) => {
       if (selectedAnswers[index] === q.correctAnswer) {
-        correct++
+        correct++;
       }
     })
-    return { correct, total: quiz.length, percentage: (correct / quiz.length) * 100 }
-  }
+    return {
+      correct,
+      total: quiz.length,
+      percentage: (correct / quiz.length) * 100,
+    }
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRemainingTime((r) => (r > 0 ? r - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [currentQuestion]);
+
+  useEffect(() => {
+    if (remainingTime === 0 && isLastQuestion) {
+      setShowResults(true);
+    }
+  }, [remainingTime, isLastQuestion])
 
   if (showResults) {
     const score = calculateScore()
@@ -76,7 +99,7 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
                           <p className="text-muted-foreground">
                             Your answer:{" "}
                             <span className={isCorrect ? "text-accent" : "text-destructive"}>
-                              {q.options[userAnswer]}
+                              {userAnswer !== undefined ? q.options[userAnswer] : "No answer selected"}
                             </span>
                           </p>
                           {!isCorrect && (
@@ -104,6 +127,7 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
               setShowResults(false)
               setCurrentQuestion(0)
               setSelectedAnswers({})
+              setRemainingTime(30)
             }}
             className="w-full"
           >
@@ -111,17 +135,23 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
           </Button>
         </CardContent>
       </Card>
-    )
+    );
   }
-  console.log(selectedAnswers);
+
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Quiz</CardTitle>
-          <Badge variant="secondary">
-            Question {currentQuestion + 1} of {quiz.length}
-          </Badge>
+          <div className="flex gap-3">
+            <Badge variant="secondary">
+              <TimerIcon className="mr-2 h-4 w-4" />
+              {remainingTime}s
+            </Badge>
+            <Badge variant="secondary">
+              Question {currentQuestion + 1} of {quiz.length}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -129,8 +159,12 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
           question={question}
           value={selectedAnswers[currentQuestion]?.toString() ?? undefined}
           onValueChange={(value) =>
-            setSelectedAnswers((prev) => ({ ...prev, [currentQuestion]: Number.parseInt(value) }))
+            setSelectedAnswers((prev) => ({
+              ...prev,
+              [currentQuestion]: Number.parseInt(value),
+            }))
           }
+          disabled={remainingTime <= 0}
           key={question.id}
         />
 
@@ -138,11 +172,11 @@ export function QuizDisplay({ quiz }: QuizDisplayProps) {
           <Button variant="outline" onClick={handlePrevious} disabled={currentQuestion === 0}>
             Previous
           </Button>
-          <Button onClick={handleNext} disabled={!isAnswered}>
+          <Button onClick={handleNext} disabled={!isAnswered && remainingTime > 0}>
             {isLastQuestion ? "Submit Quiz" : "Next Question"}
           </Button>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

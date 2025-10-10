@@ -5,6 +5,7 @@ import { SummaryDisplay } from "@/components/summary-display"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
+import { documentToFile } from '@/lib/ai'
 import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from '@/types/lessons.types'
 import { FileText, Mic } from "lucide-react"
@@ -111,9 +112,25 @@ export default function LecturePage() {
             <CardDescription>Upload your lecture notes or recording transcripts</CardDescription>
           </CardHeader>
           <CardContent>
-            <FileUpload onFileSelect={handleFileSelect} disabled={generateFromAIMutation.isPending} />
+            <FileUpload
+              onFileSelect={handleFileSelect}
+              disabled={generateFromAIMutation.isPending}
+              defaultFile={selectedSubject.lecture?.document && documentToFile(selectedSubject.lecture?.document)}
+            />
           </CardContent>
         </Card>
+
+        {/* Regenerate Button */}
+        <Button onClick={handleGenerateSummary} disabled={generateFromAIMutation.isPending}>
+          {generateFromAIMutation.isPending ? (
+            <>
+              <Spinner className="mr-2" />
+              Regenerating Summary...
+            </>
+          ) : (
+            "Regenerate Summary"
+          )}
+        </Button>
 
         {selectedSubject.lecture?.document && (
           <div className="space-y-4">
