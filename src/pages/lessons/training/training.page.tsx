@@ -24,10 +24,11 @@ export default function TrainingPage() {
   const updateSubjectMutation = LessonsService.useUpdateSubject();
   const pptWrapperRef = useRef<HTMLDivElement>(null);
 
-  const currentSummary = selectedSubject?.training?.summary
-  const currentQuizQuestions = selectedSubject?.training?.quizQuestions
-  const handleFileSelect = async (file: File) => {
+  const currentSummary = selectedSubject?.training?.summary;
+  const currentQuizQuestions = selectedSubject?.training?.quizQuestions;
+  const currentDocument = selectedSubject?.training?.document;
 
+  const handleFileSelect = async (file: File) => {
     const blob = await file.arrayBuffer().then((buffer) => new Blob([buffer]));
 
     const doc: TDocument = {
@@ -35,106 +36,130 @@ export default function TrainingPage() {
       name: file.name,
       type: "ppt",
       uploadedAt: new Date(),
-      blob: blob
-    }
-    updateSubjectMutation.mutate({
-      data: {
-        ...selectedSubject,
-        training: {
-          ...selectedSubject.training,
-          document: doc
-        }
+      blob: blob,
+    };
+
+    updateSubjectMutation.mutate(
+      {
+        data: {
+          ...selectedSubject,
+          training: {
+            ...selectedSubject.training,
+            document: doc,
+          },
+        },
+      },
+      {
+        onSuccess: (data) => {
+          setSelectedSubject(data);
+        },
       }
-    }, {
-      onSuccess: (data) => {
-        setSelectedSubject(data);
-      }
-    })
-  }
+    );
+  };
 
   useEffect(() => {
-    if (selectedSubject?.training?.document && pptWrapperRef.current) {
+    if (currentDocument && pptWrapperRef.current) {
       const pptxViewer = init(pptWrapperRef.current, {
         width: 1080,
         height: 640,
-        mode: "list"
-      })
-      selectedSubject.training.document.blob.arrayBuffer().then(async (buffer) => {
+        mode: "list",
+      });
+      currentDocument.blob.arrayBuffer().then(async (buffer) => {
         await pptxViewer.preview(buffer);
       });
     }
-  }, [selectedSubject.training?.document])
+  }, [currentDocument]);
 
   const handleGenerateSummaryAndQuiz = async () => {
-    console.log('hello')
-    if (!selectedSubject?.training?.document) return;
-    console.log('hello2')
-    generateFromAIMutation.mutate({
-      document: selectedSubject?.training?.document,
-      options: ["summary", "quiz", "coding", "theory"]
-    }, {
-      onSuccess: (data) => {
-        updateSubjectMutation.mutate({
-          data: {
-            ...selectedSubject,
-            training: {
-              ...selectedSubject.training!,
-              summary: data.summary,
-              quizQuestions: data.quiz,
-              theoryQuestions: data.theory,
-              codingQuestions: data.coding
-            }
-          }
-        }, {
-          onSuccess: (data) => {
-            setSelectedSubject(data);
-          }
-        })
+    if (!currentDocument) return;
+
+    generateFromAIMutation.mutate(
+      {
+        document: currentDocument,
+        options: ["summary", "quiz", "coding", "theory"],
       },
-      onError: (error) => {
-        toast.error(error.message);
+      {
+        onSuccess: (data) => {
+          updateSubjectMutation.mutate(
+            {
+              data: {
+                ...selectedSubject,
+                training: {
+                  ...selectedSubject.training!,
+                  summary: data.summary,
+                  quizQuestions: data.quiz,
+                  theoryQuestions: data.theory,
+                  codingQuestions: data.coding,
+                },
+              },
+            },
+            {
+              onSuccess: (data) => {
+                setSelectedSubject(data);
+              },
+            }
+          );
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
       }
-    })
-  }
+    );
+  };
 
   return (
     <div className="container mx-auto p-8 max-w-6xl">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2 text-balance">Training Presentation</h1>
         <p className="text-muted-foreground text-lg">
-          Upload your training PPT and generate comprehensive study materials
+          {role === "teacher"
+            ? "Upload your training PPT and generate comprehensive study materials"
+            : "View your training materials and take quizzes to reinforce learning"}
         </p>
-        <p className="text-sm text-muted-foreground mt-1">Current Subject: {selectedSubject?.name}</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          Current Subject: {selectedSubject?.name}
+        </p>
       </div>
 
       <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Upload Training Presentation</CardTitle>
-            <CardDescription>Upload your PowerPoint or presentation files</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <FileUpload
-              onFileSelect={handleFileSelect}
-              accept=".pptx"
-              disabled={generateFromAIMutation.isPending}
-              defaultFile={selectedSubject?.training?.document ? documentToFile(selectedSubject?.training?.document) : undefined}
-            />
-          </CardContent>
-        </Card>
-        {/* Regenerate Button */}
-        <Button onClick={handleGenerateSummaryAndQuiz} disabled={generateFromAIMutation.isPending}>
-          {generateFromAIMutation.isPending ? (
-            <>
-              <Spinner className="mr-2" />
-              Regenerating Summary and Quiz...
-            </>
-          ) : (
-            "Regenerate Summary and Quiz"
-          )}
-        </Button>
+        {role === "teacher" && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Upload Training Presentation</CardTitle>
+              <CardDescription>
+                Upload your PowerPoint or presentation files
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FileUpload
+                onFileSelect={handleFileSelect}
+                accept=".pptx"
+                disabled={generateFromAIMutation.isPending}
+                defaultFile={
+                  currentDocument ? documentToFile(currentDocument) : undefined
+                }
+              />
+            </CardContent>
+          </Card>
+        )}
 
-        {selectedSubject?.training?.document && (
+        {role === "teacher" && (
+          <Button
+            onClick={handleGenerateSummaryAndQuiz}
+            disabled={generateFromAIMutation.isPending}
+          >
+            {generateFromAIMutation.isPending ? (
+              <>
+                <Spinner className="mr-2" />
+                Regenerating Summary and Quiz...
+              </>
+            ) : (
+              "Regenerate Summary and Quiz"
+            )}
+          </Button>
+        )}
+
+        {currentDocument && (
           <>
             <div ref={pptWrapperRef} />
 
@@ -150,17 +175,24 @@ export default function TrainingPage() {
                     <CardContent className="pt-6">
                       <div className="text-center py-8">
                         <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-muted-foreground mb-4">No summary generated yet</p>
-                        <Button onClick={handleGenerateSummaryAndQuiz} disabled={generateFromAIMutation.isPending}>
-                          {generateFromAIMutation.isPending ? (
-                            <>
-                              <Spinner className="mr-2" />
-                              Generating Summary and Quiz...
-                            </>
-                          ) : (
-                            "Generate Summary and Quiz"
-                          )}
-                        </Button>
+                        <p className="text-muted-foreground mb-4">
+                          No summary available yet
+                        </p>
+                        {role === "teacher" && (
+                          <Button
+                            onClick={handleGenerateSummaryAndQuiz}
+                            disabled={generateFromAIMutation.isPending}
+                          >
+                            {generateFromAIMutation.isPending ? (
+                              <>
+                                <Spinner className="mr-2" />
+                                Generating Summary and Quiz...
+                              </>
+                            ) : (
+                              "Generate Summary and Quiz"
+                            )}
+                          </Button>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -175,17 +207,25 @@ export default function TrainingPage() {
                     <CardContent className="pt-6">
                       <div className="text-center py-8">
                         <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-muted-foreground mb-4">No quiz generated yet</p>
-                        <Button onClick={handleGenerateSummaryAndQuiz} disabled={generateFromAIMutation.isPending}>
-                          {generateFromAIMutation.isPending ? (
-                            <>
-                              <Spinner className="mr-2" />
-                              Generating Summary and Quiz...
-                            </>
-                          ) : (
-                            "Generate Summary and Quiz"
-                          )}
-                        </Button>
+                        <p className="text-muted-foreground mb-4">
+                          No quiz available yet
+                        </p>
+
+                        {role === "teacher" && (
+                          <Button
+                            onClick={handleGenerateSummaryAndQuiz}
+                            disabled={generateFromAIMutation.isPending}
+                          >
+                            {generateFromAIMutation.isPending ? (
+                              <>
+                                <Spinner className="mr-2" />
+                                Generating Summary and Quiz...
+                              </>
+                            ) : (
+                              "Generate Summary and Quiz"
+                            )}
+                          </Button>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -209,5 +249,5 @@ export default function TrainingPage() {
         }}>Next</Button>
       </div>
     </div>
-  )
+  );
 }
