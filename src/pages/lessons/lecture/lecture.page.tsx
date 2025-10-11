@@ -1,6 +1,5 @@
-"use client"
-
 import { FileUpload } from "@/components/file-upload"
+import { BlobPdfViewer } from '@/components/pdf-viewer'
 import { SummaryDisplay } from "@/components/summary-display"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -133,29 +132,32 @@ export default function LecturePage() {
         </Button>
 
         {selectedSubject.lecture?.document && (
-          <div className="space-y-4">
-            {!currentSummary ? (
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-center py-8">
-                    <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">No summary generated yet</p>
-                    <Button onClick={handleGenerateSummary} disabled={generateFromAIMutation.isPending}>
-                      {generateFromAIMutation.isPending ? (
-                        <>
-                          <Spinner className="mr-2" />
-                          Generating Summary...
-                        </>
-                      ) : (
-                        "Generate Summary"
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <SummaryDisplay summary={currentSummary} />
-            )}
+          <div>
+            <BlobPdfViewer blob={selectedSubject.lecture.document.blob} />
+            <div className="space-y-4">
+              {!currentSummary ? (
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center py-8">
+                      <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground mb-4">No summary generated yet</p>
+                      <Button onClick={handleGenerateSummary} disabled={generateFromAIMutation.isPending}>
+                        {generateFromAIMutation.isPending ? (
+                          <>
+                            <Spinner className="mr-2" />
+                            Generating Summary...
+                          </>
+                        ) : (
+                          "Generate Summary"
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <SummaryDisplay summary={currentSummary} />
+              )}
+            </div>
           </div>
         )}
       </div>

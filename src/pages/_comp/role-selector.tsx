@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
+import { useRole } from '@/hooks/role/use-role';
 
 export const RoleSelector = () => {
+  const { setRole } = useRole();
 
-  const handleRoleSelect = (role: string) => {
-    sessionStorage.setItem('role', role);
-    window.location.reload();
+  const handleRoleSelect = (role: 'student' | 'teacher') => {
+    setRole(role);
   };
 
   return (

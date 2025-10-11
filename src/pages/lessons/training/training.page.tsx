@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useRole } from '@/hooks/role/use-role'
 import { documentToFile } from '@/lib/ai'
 import LessonsService from '@/services/lessons/lessons.service'
 import type { TDocument } from '@/types/lessons.types'
@@ -16,6 +17,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCurrentSubjectStore } from '../lessons.store'
 
 export default function TrainingPage() {
+  const { role } = useRole();
   const { selectedSubject, setSelectedSubject } = useCurrentSubjectStore();
   const navigate = useNavigate();
   const generateFromAIMutation = LessonsService.useGenerateFromAI();

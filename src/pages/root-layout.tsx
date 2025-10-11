@@ -1,10 +1,11 @@
 import { Sidebar } from '@/components/sidebar';
+import { useRole } from '@/hooks/role/use-role';
 import { Outlet } from 'react-router-dom';
 import { RoleSelector } from './_comp/role-selector';
+;
 
 export const RootLayout = () => {
-
-  const role = sessionStorage.getItem('role');
+  const { role } = useRole();
 
   if (!role) {
     return <RoleSelector />

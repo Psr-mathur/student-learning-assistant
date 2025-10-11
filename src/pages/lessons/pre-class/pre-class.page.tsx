@@ -1,4 +1,5 @@
 import { FileUpload } from "@/components/file-upload"
+import { BlobPdfViewer } from '@/components/pdf-viewer'
 import { QuizDisplay } from "@/components/quiz-display"
 import { SummaryDisplay } from '@/components/summary-display'
 import { Button } from "@/components/ui/button"
@@ -147,67 +148,69 @@ export function PreClassPage() {
           )}
         </Button>
         {selectedSubject.preClass?.document && (
-          <Tabs defaultValue="summary" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="summary">Summary</TabsTrigger>
-              <TabsTrigger value="quiz">Quiz</TabsTrigger>
-            </TabsList>
+          <div>
+            <BlobPdfViewer blob={selectedSubject.preClass.document.blob} />
 
-            <TabsContent value="summary" className="space-y-4">
-              {!currentSummary ? (
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-center py-8">
-                      <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-muted-foreground mb-4">No summary generated yet</p>
-                      <Button
-                        onClick={handleGenerateSummaryAndQuiz}
-                        disabled={generateFromAIMutation.isPending}
-                      >
-                        {generateFromAIMutation.isPending ? (
-                          <>
-                            <Spinner className="mr-2" />
-                            Generating Summary and Quiz...
-                          </>
-                        ) : (
-                          "Generate Summary and Quiz"
-                        )}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                <SummaryDisplay summary={currentSummary} />
-              )}
-            </TabsContent>
-
-            <TabsContent value="quiz" className="space-y-4">
-              {!currentQuizQuestions ? (
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="text-center py-8">
-                      <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-muted-foreground mb-4">No quiz generated yet</p>
-                      <Button
-                        onClick={handleGenerateSummaryAndQuiz}
-                        disabled={generateFromAIMutation.isPending}>
-                        {generateFromAIMutation.isPending ? (
-                          <>
-                            <Spinner className="mr-2" />
-                            Generating Summary and Quiz...
-                          </>
-                        ) : (
-                          "Generate Summary and Quiz"
-                        )}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                <QuizDisplay quiz={currentQuizQuestions} />
-              )}
-            </TabsContent>
-          </Tabs>
+            <Tabs defaultValue="summary" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="summary">Summary</TabsTrigger>
+                <TabsTrigger value="quiz">Quiz</TabsTrigger>
+              </TabsList>
+              <TabsContent value="summary" className="space-y-4">
+                {!currentSummary ? (
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-center py-8">
+                        <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground mb-4">No summary generated yet</p>
+                        <Button
+                          onClick={handleGenerateSummaryAndQuiz}
+                          disabled={generateFromAIMutation.isPending}
+                        >
+                          {generateFromAIMutation.isPending ? (
+                            <>
+                              <Spinner className="mr-2" />
+                              Generating Summary and Quiz...
+                            </>
+                          ) : (
+                            "Generate Summary and Quiz"
+                          )}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <SummaryDisplay summary={currentSummary} />
+                )}
+              </TabsContent>
+              <TabsContent value="quiz" className="space-y-4">
+                {!currentQuizQuestions ? (
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-center py-8">
+                        <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground mb-4">No quiz generated yet</p>
+                        <Button
+                          onClick={handleGenerateSummaryAndQuiz}
+                          disabled={generateFromAIMutation.isPending}>
+                          {generateFromAIMutation.isPending ? (
+                            <>
+                              <Spinner className="mr-2" />
+                              Generating Summary and Quiz...
+                            </>
+                          ) : (
+                            "Generate Summary and Quiz"
+                          )}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <QuizDisplay quiz={currentQuizQuestions} />
+                )}
+              </TabsContent>
+            </Tabs>
+          </div>
         )}
       </div>
 
