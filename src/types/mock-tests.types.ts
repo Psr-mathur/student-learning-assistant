@@ -1,9 +1,11 @@
-import type { TPracticeQuestion } from './lessons.types'
+import type { TCodingQuestion, TQuizQuestion, TTheoryQuestion } from './lessons.types'
 
 export type TMockTest = {
   id: string
   subject: string
   title: string
   duration?: number
-  questions: TPracticeQuestion[]
+  codingQuestions?: TCodingQuestion[]
+  theoryQuestions?: TTheoryQuestion[]
+  quizQuestions?: TQuizQuestion[]
 }

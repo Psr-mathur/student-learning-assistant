@@ -23,21 +23,6 @@ export default class LessonsService {
     mutationFn: lessonsApi.generateSummary,
   });
 
-  static useGenerateQuizQuestions = createMutationHook({
-    mutationKey: ['lessons', 'quizQuestions'],
-    mutationFn: lessonsApi.generateQuizQuestions,
-  });
-
-  static useGenerateTheoryQuestions = createMutationHook({
-    mutationKey: ['lessons', 'theoryQuestions'],
-    mutationFn: lessonsApi.generateTheoryQuestions,
-  });
-
-  static useGenerateCodingQuestions = createMutationHook({
-    mutationKey: ['lessons', 'codingQuestions'],
-    mutationFn: lessonsApi.generateCodingQuestions,
-  });
-
   static useGenerateFromAI = createMutationHook({
     mutationKey: ['lessons', 'generateFromAI'],
     mutationFn: generateFromAI,

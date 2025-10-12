@@ -42,7 +42,7 @@ export function MockTestCard({ test, onStart }: MockTestCardProps) {
           </Badge>
           <Badge variant="outline" className="flex items-center gap-1">
             <FileText className="h-3 w-3" />
-            {test.questions.length} questions
+            {(test.quizQuestions?.length || 0) + (test.codingQuestions?.length || 0) + (test.theoryQuestions?.length || 0)} questions
           </Badge>
         </div>
 

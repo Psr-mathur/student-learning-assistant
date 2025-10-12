@@ -9,8 +9,8 @@ import { useMockTestsStore } from './mock-tests.store'
 export const MockTestInterface = ({ test }: { test: TMockTest }) => {
   const { setActiveTest, addCompletedTest, addUserSolution, getSolution, userSolution } = useMockTestsStore();
 
-  const mcqQuestions = test.questions.filter((q) => q.type === 'mcq')
-  const codingQuestions = test.questions.filter((q) => q.type === 'coding')
+  const mcqQuestions = test.quizQuestions ?? []
+  const codingQuestions = test.codingQuestions ?? []
 
   return (
     <div>

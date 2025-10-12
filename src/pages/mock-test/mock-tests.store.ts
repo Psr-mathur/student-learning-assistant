@@ -49,25 +49,33 @@ export const useMockTestsStore = create(
       return get().completedTests.has(test.id)
     },
     calculateTestScore: (test) => {
-      const mcqScores = test.questions.filter((q) => q.type === "mcq").map((q) => {
+      const mcqScores = test.quizQuestions?.map((q) => {
         const solution = [...get().userSolution].find((s) => s.testId === test.id && s.questionId === q.id)
-        return solution?.answer === q.correctAnswer ? SCORE_MAP[q.difficulty] : 0
+        return solution?.answer === q.correctAnswer ? SCORE_MAP.easy : 0
       })
 
-      const codingScores = test.questions.filter((q) => q.type === "coding").map((q) => {
+      const codingScores = test.codingQuestions?.map((q) => {
+        const solution = [...get().userSolution].find((s) => s.testId === test.id && s.questionId === q.id)
+        return solution?.answer === "test-passed" ? SCORE_MAP[q.difficulty] : 0
+      })
+
+      const theoryScores = test.theoryQuestions?.map((q) => {
         const solution = [...get().userSolution].find((s) => s.testId === test.id && s.questionId === q.id)
         return solution?.answer === "test-passed" ? SCORE_MAP[q.difficulty] : 0
       })
 
       return {
-        mcq: mcqScores.reduce((a, b) => a + b, 0),
-        coding: codingScores.reduce((a, b) => a + b, 0),
-        outOf: test.questions.reduce((a, b) => a + SCORE_MAP[b.difficulty], 0)
+        mcq: mcqScores?.reduce((a, b) => a + b, 0) || 0,
+        coding: codingScores?.reduce((a, b) => a + b, 0) || 0,
+        theory: theoryScores?.reduce((a, b) => a + b, 0) || 0,
+        outOf: (test.quizQuestions?.reduce((a) => a + SCORE_MAP.easy, 0) || 0) +
+          (test.codingQuestions?.reduce((a, b) => a + SCORE_MAP[b.difficulty], 0) || 0) +
+          (test.theoryQuestions?.reduce((a, b) => a + SCORE_MAP[b.difficulty], 0) || 0)
       }
     },
     calculateTestDifficulty: (test) => {
       const mostFrequentDifficulty = Object.entries(
-        test.questions.reduce((acc, q) => {
+        [...(test.codingQuestions || []), ...(test.theoryQuestions || [])].reduce((acc, q) => {
           acc[q.difficulty] = (acc[q.difficulty] || 0) + 1;
           return acc;
         }, {} as Record<"easy" | "medium" | "hard", number>)

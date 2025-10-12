@@ -1,4 +1,4 @@
-import type { TPracticeQuestion } from '@/types/lessons.types';
+import type { TCodingQuestion } from '@/types/lessons.types';
 import { Play, RotateCcw } from 'lucide-react';
 import Prism from "prismjs";
 import "prismjs/components/prism-javascript";
@@ -9,9 +9,9 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 
-export const CodingQuestionsCard = ({ questions, solutions, onSolutionChange }: { questions: Extract<TPracticeQuestion, { type: "coding" }>[]; solutions: Record<string, string>; onSolutionChange: (questionId: string, code: string) => void }) => {
+export const CodingQuestionsCard = ({ questions, solutions, onSolutionChange }: { questions: TCodingQuestion[]; solutions: Record<string, string>; onSolutionChange: (questionId: string, code: string) => void }) => {
 
-  const [selectedQuestion, setSelectedQuestion] = useState<Extract<TPracticeQuestion, { type: "coding" }> | undefined>(questions.at(0));
+  const [selectedQuestion, setSelectedQuestion] = useState<TCodingQuestion | undefined>(questions.at(0));
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -1,4 +1,4 @@
-import type { TPracticeQuestion } from '@/types/lessons.types';
+import type { TTheoryQuestion } from '@/types/lessons.types';
 import { CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from './ui/badge';
@@ -6,7 +6,7 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Textarea } from './ui/textarea';
 
-export const TheoryQuestionCard = ({ question, index }: { question: Extract<TPracticeQuestion, { type: "theory" }>; index: number }) => {
+export const TheoryQuestionCard = ({ question, index }: { question: TTheoryQuestion; index: number }) => {
   const [localAnswer, setLocalAnswer] = useState("")
   const [localShowAnswer, setLocalShowAnswer] = useState(false)
 

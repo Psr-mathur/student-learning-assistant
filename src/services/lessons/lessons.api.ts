@@ -1,7 +1,5 @@
 import { dbPromise } from '@/lib/db';
-import type { TCodingQuestion, TDocument, TQuizQuestion, TSubject, TTheoryQuestion } from '@/types/lessons.types';
-
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+import type { TDocument, TSubject } from '@/types/lessons.types';
 
 export default class {
   static async getSubjects() {
@@ -25,21 +23,6 @@ export default class {
   static async generateSummary({ document }: { document: TDocument }) {
     const summary = await document.blob.text();
     return summary;
-  }
-
-  static async generateQuizQuestions({ document }: { document: TDocument }) {
-    const quizQuestions = await document.blob.text();
-    return [] as TQuizQuestion[];
-  }
-
-  static async generateTheoryQuestions({ document }: { document: TDocument }) {
-    const theoryQuestions = await document.blob.text();
-    return [] as TTheoryQuestion[];
-  }
-
-  static async generateCodingQuestions({ document }: { document: TDocument }) {
-    const codingQuestions = await document.blob.text();
-    return [] as TCodingQuestion[];
   }
 }
 
