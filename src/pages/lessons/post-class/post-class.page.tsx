@@ -138,6 +138,22 @@ export default function PostClassPage() {
           </Card>
         )}
 
+        {(role === "teacher" && (currentSummary || currentQuizQuestions)) && (
+          <Button
+            onClick={handleGenerateSummaryAndQuiz}
+            disabled={generateFromAIMutation.isPending}
+          >
+            {generateFromAIMutation.isPending ? (
+              <>
+                <Spinner className="mr-2" />
+                Regenerating Summary and Quiz...
+              </>
+            ) : (
+              "Regenerate Summary and Quiz"
+            )}
+          </Button>
+        )}
+
         {selectedSubject.postClass?.document && (
           <div>
             <BlobPdfViewer blob={selectedSubject.postClass.document.blob} />

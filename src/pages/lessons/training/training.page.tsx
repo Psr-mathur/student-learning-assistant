@@ -143,7 +143,7 @@ export default function TrainingPage() {
           </Card>
         )}
 
-        {role === "teacher" && (
+        {(role === "teacher" && (currentSummary || currentQuizQuestions)) && (
           <Button
             onClick={handleGenerateSummaryAndQuiz}
             disabled={generateFromAIMutation.isPending}

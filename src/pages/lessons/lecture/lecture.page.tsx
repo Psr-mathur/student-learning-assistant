@@ -106,7 +106,7 @@ export default function LecturePage() {
       )}
 
       <div className="space-y-6">
-        {role === "teacher" && (
+        {(role === "teacher") && (
           <Card>
             <CardHeader>
               <CardTitle>Upload Lecture Materials</CardTitle>
@@ -122,7 +122,7 @@ export default function LecturePage() {
           </Card>
         )}
 
-        {role === "teacher" && (
+        {(role === "teacher" && currentSummary) && (
           <Button onClick={handleGenerateSummary} disabled={generateFromAIMutation.isPending}>
             {generateFromAIMutation.isPending ? (
               <>

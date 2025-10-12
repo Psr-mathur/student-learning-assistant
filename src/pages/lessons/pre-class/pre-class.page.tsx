@@ -156,7 +156,7 @@ export function PreClassPage() {
             </CardContent>
           </Card>
         )}
-        {role === "teacher" && (
+        {(role === "teacher" && (currentSummary || currentQuizQuestions)) && (
           <Button
             onClick={handleGenerateSummaryAndQuiz}
             disabled={generateFromAIMutation.isPending}
